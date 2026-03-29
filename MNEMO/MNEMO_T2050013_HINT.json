@@ -1,0 +1,567 @@
+{
+  "0": {
+    "lv": 1,
+    "next": [
+      1,
+      2,
+      3
+    ],
+    "keyword": "",
+    "search": "",
+    "idea": "",
+    "keywordWords": 0
+  },
+  "1": {
+    "lv": 1,
+    "next": [
+      6,
+      14
+    ],
+    "keyword": "内定書",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "2": {
+    "lv": 1,
+    "next": [
+      22,
+      30,
+      4,
+      7
+    ],
+    "keyword": "夏休み",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "3": {
+    "lv": 1,
+    "next": [
+      25,
+      8
+    ],
+    "keyword": "家族",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "4": {
+    "lv": 1,
+    "next": [
+      9
+    ],
+    "keyword": "拝野真理",
+    "search": "",
+    "idea": "最初のレベルだからと油断せず、よく確認しましょう。",
+    "keywordWords": 1
+  },
+  "5": {
+    "lv": 1,
+    "next": [],
+    "keyword": "製造所跡地",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "6": {
+    "lv": 1,
+    "next": [
+      29
+    ],
+    "keyword": "迎火",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "7": {
+    "lv": 2,
+    "next": [],
+    "keyword": "拝野真理",
+    "search": "",
+    "idea": "最初のレベルだからと油断せず、よく確認しましょう。",
+    "keywordWords": 1
+  },
+  "8": {
+    "lv": 2,
+    "next": [
+      17
+    ],
+    "keyword": "拝野美穂",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "9": {
+    "lv": 2,
+    "next": [
+      19
+    ],
+    "keyword": "針水病院",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "10": {
+    "lv": 2,
+    "next": [
+      13
+    ],
+    "keyword": "緋崎建設",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "11": {
+    "lv": 2,
+    "next": [],
+    "keyword": "拝野",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "12": {
+    "lv": 3,
+    "next": [
+      23,
+      24
+    ],
+    "keyword": "███",
+    "search": "",
+    "idea": "",
+    "keywordWords": 0
+  },
+  "13": {
+    "lv": 3,
+    "next": [
+      36
+    ],
+    "keyword": "針水未来会議",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "14": {
+    "lv": 3,
+    "next": [
+      15,
+      16
+    ],
+    "keyword": "四菱電機",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "15": {
+    "lv": 3,
+    "next": [],
+    "keyword": "大木康弘",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "16": {
+    "lv": 3,
+    "next": [
+      37,
+      43
+    ],
+    "keyword": "大木康弘",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "17": {
+    "lv": 3,
+    "next": [
+      18,
+      20
+    ],
+    "keyword": "8月15日",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "18": {
+    "lv": 3,
+    "next": [],
+    "keyword": "告発",
+    "search": "",
+    "idea": "「文字」と「位置」に注目し、それぞれを調べてみましょう。",
+    "keywordWords": 1
+  },
+  "19": {
+    "lv": 3,
+    "next": [
+      10,
+      21
+    ],
+    "keyword": "拝野洋介",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "20": {
+    "lv": 3,
+    "next": [
+      12
+    ],
+    "keyword": "癒着",
+    "search": "",
+    "idea": "「文字」と「位置」に注目し、それぞれを調べてみましょう。",
+    "keywordWords": 1
+  },
+  "21": {
+    "lv": 4,
+    "next": [
+      26
+    ],
+    "keyword": "緋崎建設",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "22": {
+    "lv": 4,
+    "next": [
+      11,
+      19,
+      8,
+      4,
+      7
+    ],
+    "keyword": "町内会",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "23": {
+    "lv": 4,
+    "next": [
+      33,
+      35
+    ],
+    "keyword": "ごみ袋",
+    "search": "",
+    "idea": "前のページのリンクが何を指していたのかを踏まえて、じっくり確認しましょう。",
+    "keywordWords": 1
+  },
+  "24": {
+    "lv": 4,
+    "next": [],
+    "keyword": "ごみ袋",
+    "search": "",
+    "idea": "前のページのリンクが何を指していたのかを踏まえて、じっくり確認しましょう。",
+    "keywordWords": 1
+  },
+  "25": {
+    "lv": 4,
+    "next": [
+      31
+    ],
+    "keyword": "リキ",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "26": {
+    "lv": 5,
+    "next": [
+      27
+    ],
+    "keyword": "事故報告書",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "27": {
+    "lv": 5,
+    "next": [
+      28,
+      34
+    ],
+    "keyword": "針水葬儀場",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "28": {
+    "lv": 5,
+    "next": [],
+    "keyword": "西村清志",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "29": {
+    "lv": 5,
+    "next": [
+      5
+    ],
+    "keyword": "花火",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "30": {
+    "lv": 6,
+    "next": [
+      39
+    ],
+    "keyword": "町内会",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "31": {
+    "lv": 6,
+    "next": [
+      38
+    ],
+    "keyword": "赤い首輪",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "32": {
+    "lv": 6,
+    "next": [
+      45
+    ],
+    "keyword": "東京",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "33": {
+    "lv": 6,
+    "next": [],
+    "keyword": "矢田早苗",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "34": {
+    "lv": 7,
+    "next": [],
+    "keyword": "西村清志 くちなしの花",
+    "search": "",
+    "idea": "",
+    "keywordWords": 2
+  },
+  "35": {
+    "lv": 7,
+    "next": [
+      40
+    ],
+    "keyword": "矢田早苗 おくりもの",
+    "search": "",
+    "idea": "",
+    "keywordWords": 2
+  },
+  "36": {
+    "lv": 7,
+    "next": [
+      32,
+      44
+    ],
+    "keyword": "緋崎正邦 じゅずのいと",
+    "search": "",
+    "idea": "",
+    "keywordWords": 2
+  },
+  "37": {
+    "lv": 7,
+    "next": [],
+    "keyword": "拝野匠",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "38": {
+    "lv": 7,
+    "next": [
+      34
+    ],
+    "keyword": "くちなしの花",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "39": {
+    "lv": 7,
+    "next": [
+      35
+    ],
+    "keyword": "おくりもの",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "40": {
+    "lv": 7,
+    "next": [
+      36
+    ],
+    "keyword": "数珠",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "41": {
+    "lv": 7,
+    "next": [
+      43
+    ],
+    "keyword": "ゆびさき",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "42": {
+    "lv": 7,
+    "next": [
+      49
+    ],
+    "keyword": "精霊馬",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "43": {
+    "lv": 8,
+    "next": [
+      42
+    ],
+    "keyword": "拝野匠 ゆびさき",
+    "search": "",
+    "idea": "",
+    "keywordWords": 2
+  },
+  "44": {
+    "lv": 8,
+    "next": [
+      46
+    ],
+    "keyword": "東京",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "45": {
+    "lv": 8,
+    "next": [
+      41
+    ],
+    "keyword": "1359",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "46": {
+    "lv": 8,
+    "next": [
+      47
+    ],
+    "keyword": "お台場",
+    "search": "",
+    "idea": "どんなモノのどんな言葉で検索してこのページにたどり着いたのかを思い出し、その関連から考察してみましょう。\n必要に応じてGoogleで知識を補うのも有効です。",
+    "keywordWords": 1
+  },
+  "47": {
+    "lv": 8,
+    "next": [
+      48,
+      49
+    ],
+    "keyword": "お台場ナイトイベント実行委員会",
+    "search": "略称ではなく正式名称で検索しましょう。",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "48": {
+    "lv": 8,
+    "next": [],
+    "keyword": "緋崎誠司",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "49": {
+    "lv": 9,
+    "next": [
+      50
+    ],
+    "keyword": "緋崎誠司 しょうりょうま",
+    "search": "",
+    "idea": "",
+    "keywordWords": 2
+  },
+  "50": {
+    "lv": 9,
+    "next": [
+      52
+    ],
+    "keyword": "TSUBASA",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "51": {
+    "lv": 9,
+    "next": [
+      54
+    ],
+    "keyword": "塔",
+    "search": "",
+    "idea": "",
+    "keywordWords": 0
+  },
+  "52": {
+    "lv": 9,
+    "next": [
+      55,
+      56
+    ],
+    "keyword": "ASHTORCH",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "53": {
+    "lv": 9,
+    "next": [
+      51
+    ],
+    "keyword": "マトリョーシカ",
+    "search": "",
+    "idea": "",
+    "keywordWords": 1
+  },
+  "54": {
+    "lv": 10,
+    "next": [],
+    "keyword": "矢田翼",
+    "search": "",
+    "idea": "これまで感じた違和感をすべて合わせて考えましょう。矛盾点やおかしな点を整理して、全体の意味を推測します。",
+    "keywordWords": 1
+  },
+  "55": {
+    "lv": 10,
+    "next": [],
+    "keyword": "0815",
+    "search": "",
+    "idea": "「彼にとって大切な4桁の数字」を探しましょう。",
+    "keywordWords": 0
+  },
+  "56": {
+    "lv": 10,
+    "next": [
+      53
+    ],
+    "keyword": "0815",
+    "search": "",
+    "idea": "「彼にとって大切な4桁の数字」を探しましょう。",
+    "keywordWords": 0
+  }
+}
