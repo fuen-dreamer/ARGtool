@@ -12,75 +12,67 @@ body{font-family:sans-serif;margin:10px;}
 h1{font-size:20px;}
 
 #layout{display:grid;}
-
 #levelPanel{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
 
 .levelBtn{
-padding:8px 12px;
-cursor:pointer;
-border:1px solid #ccc;
-background:#eee;
-border-radius:6px;
+  padding:8px 12px;
+  cursor:pointer;
+  border:1px solid #ccc;
+  background:#eee;
+  border-radius:6px;
 }
-
-.active{background:#4caf50;color:white;}
 
 #mermaid{border:1px solid #ccc;padding:10px;overflow:auto;}
 
 #legend{margin-bottom:10px;font-size:14px;}
 
 .legendBox{
-display:inline-block;
-width:14px;height:14px;
-margin-right:5px;
-border:1px solid #888;
+  display:inline-block;
+  width:14px;height:14px;
+  margin-right:5px;
+  border:1px solid #888;
 }
 
 /* モーダル */
 #modal{
-position:fixed;inset:0;
-background:rgba(0,0,0,0.6);
-display:none;align-items:center;justify-content:center;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;align-items:center;justify-content:center;
 }
 
 #modalContent{
-background:white;padding:20px;
-width:90%;max-width:400px;
-border-radius:10px;
+  background:white;padding:20px;
+  width:90%;max-width:400px;
+  border-radius:10px;
 }
 
 .hintBtn{
-display:block;width:100%;
-padding:10px;margin:8px 0;
-border:none;cursor:pointer;
-border-radius:6px;
+  display:block;width:100%;
+  padding:10px;margin:8px 0;
+  border:none;cursor:pointer;
+  border-radius:6px;
 }
 
-/* ヒント表示 */
 .hintContent{
-margin-top:5px;
-padding:6px;
-border-radius:6px;
-transition:all 0.25s ease;
+  margin-top:5px;
+  padding:6px;
+  border-radius:6px;
 }
+
+/* モザイク風 */
+.fakeText{
+  line-height:1.6;
+  letter-spacing:2px;
+  color:#666;
+}
+.fakeLine{display:block;}
 
 .locked{
-filter: blur(6px);
-opacity:0.6;
+  filter: blur(6px);
+  opacity:0.7;
 }
 
-.open{
-animation: fadeIn 0.25s ease;
-}
-
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(5px);}
-to{opacity:1; transform:translateY(0);}
-}
-
-.viewed{
-background:#fff3cd;
-}
+.viewed{background:#fff3cd;}
 </style>
 </head>
 
@@ -92,262 +84,249 @@ background:#fff3cd;
 <span class="legendBox" style="background:#c8f7c5"></span>1ワード　
 <span class="legendBox" style="background:#cce5ff"></span>2ワード　
 <span class="legendBox" style="background:#ffcccc"></span>アクセス制限　
-<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> 検索ヒント　
-<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> ひらめきヒント　
+<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> 検索ヒントあり　
+<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> ひらめきヒントあり　
+<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔑</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> ネタバレ（ワンクッションあり）　※ネタバレモードのみ解放
 </div>
 
 <div id="levelPanel"></div>
 
 <div id="layout">
-<div id="mermaid"></div>
+  <div id="mermaid"></div>
 </div>
 
 <div id="modal">
-<div id="modalContent">
-<div id="modalBody"></div>
-<button onclick="closeModal()">閉じる</button>
-</div>
+  <div id="modalContent">
+    <div id="modalBody"></div>
+    <button onclick="closeModal()">閉じる</button>
+  </div>
 </div>
 
 <script>
-
-mermaid.initialize({
-startOnLoad:false,
-securityLevel:'loose'
-})
-
-// ヒントは毎回リセット
+mermaid.initialize({startOnLoad:false, securityLevel:'loose'})
 localStorage.removeItem("hintUnlock")
 
 let pages={}
 let lvLimit=1
 let hintEnabled=false
-let spoilerEnabled=false   // ★ ネタバレモード
+let spoilerEnabled=false
 let currentOpenId=null
 
+function setColor(btn,on,color){
+  btn.style.background=on?color:"#eee"
+  btn.style.color=on?"#fff":"#000"
+}
+
+// ダミーテキスト生成
+function fakeText(lines=2){
+  let t=""
+  for(let i=0;i<lines;i++){
+    let len = 8 + Math.floor(Math.random()*10)
+    t += `<span class="fakeLine">${"■".repeat(len)}</span>`
+  }
+  return `<div class="fakeText">${t}</div>`
+}
+
 // Lvボタン
+let lvBtns=[]
 for(let i=1;i<=10;i++){
-let b=document.createElement("button")
-b.innerText="Lv"+i
-b.className="levelBtn"
-b.onclick=()=>{
-lvLimit=i
-document.querySelectorAll(".levelBtn").forEach(x=>x.classList.remove("active"))
-b.classList.add("active")
-render()
-}
-if(i===1)b.classList.add("active")
-levelPanel.appendChild(b)
-}
-
-// ヒント切替
-let t=document.createElement("button")
-t.innerText="🚫 ヒントOFF"
-t.className="levelBtn"
-
-t.onclick=()=>{
-hintEnabled=!hintEnabled
-t.innerText=hintEnabled?"💡 ヒントON":"🚫 ヒントOFF"
-t.classList.toggle("active",hintEnabled)
-render()
+  let b=document.createElement("button")
+  b.innerText="Lv"+i
+  b.className="levelBtn"
+  b.onclick=()=>{
+    lvLimit=i
+    lvBtns.forEach(x=>setColor(x,false,"#2196f3"))
+    setColor(b,true,"#2196f3")
+    render()
+  }
+  if(i===1) setColor(b,true,"#2196f3")
+  lvBtns.push(b)
+  levelPanel.appendChild(b)
 }
 
-levelPanel.appendChild(t)
-
-// ★ ネタバレボタン
-let s=document.createElement("button")
-s.innerText="🚫 ネタバレモードOFF"
-s.className="levelBtn"
-
-s.onclick=()=>{
-spoilerEnabled=!spoilerEnabled
-s.innerText=spoilerEnabled?"💀 ネタバレモードON":"🚫 ネタバレモードOFF"
-s.classList.toggle("active",spoilerEnabled)
-render()
+// ヒント
+let hintBtn=document.createElement("button")
+hintBtn.className="levelBtn"
+hintBtn.innerText="🚫 ヒントOFF"
+hintBtn.onclick=()=>{
+  hintEnabled=!hintEnabled
+  hintBtn.innerText=hintEnabled?"💡 ヒントON":"🚫 ヒントOFF"
+  setColor(hintBtn,hintEnabled,"#4caf50")
+  render()
 }
+levelPanel.appendChild(hintBtn)
 
-levelPanel.appendChild(s)
+// ネタバレ
+let spoilerBtn=document.createElement("button")
+spoilerBtn.className="levelBtn"
+spoilerBtn.innerText="🚫 ネタバレモードOFF"
+spoilerBtn.onclick=()=>{
+  spoilerEnabled=!spoilerEnabled
+  spoilerBtn.innerText=spoilerEnabled?"🔑 ネタバレモードON":"🚫 ネタバレモードOFF"
+  setColor(spoilerBtn,spoilerEnabled,"#d9534f")
+  render()
+}
+levelPanel.appendChild(spoilerBtn)
 
-// JSON読み込み
+// JSON
 fetch("MNEMO_T2050013_HINT.json")
 .then(r=>r.json())
 .then(d=>{
-pages=d
-render()
+  pages=d
+  render()
 })
 
 // 描画
 function render(){
+  let g="flowchart TD\n"
+  let visible={},visited={}
+  let unlocked=JSON.parse(localStorage.getItem("hintUnlock")||"{}")
 
-let g="flowchart TD\n"
+  for(let p in pages){
+    if(pages[p].lv<=lvLimit) visible[p]=1
+  }
 
-let visible={},visited={}
+  function dfs(n){
+    if(!visible[n]||visited[n])return
+    visited[n]=1
+    pages[n].next.forEach(dfs)
+  }
+  if(visible["0"]) dfs("0")
 
-for(let p in pages){
-if(pages[p].lv<=lvLimit) visible[p]=1
+  for(let p in visible){
+    let page=pages[p]
+
+    let icons=""
+    if(hintEnabled){
+      if(page.search) icons+=" 🔍"
+      if(page.idea) icons+=" 💡"
+    }
+
+    let keywordText=""
+    if(spoilerEnabled && unlocked["k"+p]){
+      keywordText=`<br><span style="background:#d9534f;color:#fff;padding:2px 6px;border-radius:4px;font-size:12px">🔑 ${page.keyword}</span>`
+    }
+
+    let title=(p==="0")?"スタート":p
+    g+=`${p}["${title}<br>Lv${page.lv}${icons}${keywordText}"]\n`
+  }
+
+  for(let p in visible){
+    pages[p].next.forEach(n=>{
+      if(visible[n]) g+=`${p}-->${n}\n`
+    })
+  }
+
+  for(let p in visible){
+    let page=pages[p]
+
+    if(!hintEnabled){
+      g+=`style ${p} fill:#eee\n`
+      continue
+    }
+
+    if(!visited[p]){
+      g+=`style ${p} fill:#ffcccc\n`
+      continue
+    }
+
+    if(page.keywordWords==1){
+      g+=`style ${p} fill:#c8f7c5\n`
+    }else if(page.keywordWords==2){
+      g+=`style ${p} fill:#cce5ff\n`
+    }
+  }
+
+  mermaid.render("graphDiv", g).then(res=>{
+    document.getElementById("mermaid").innerHTML=res.svg
+    bind()
+  })
 }
 
-function dfs(n){
-if(!visible[n]||visited[n])return
-visited[n]=1
-pages[n].next.forEach(dfs)
-}
-if(visible["0"]) dfs("0")
+// クリック
+function bind(){
+  let svg=document.querySelector("#mermaid svg")
+  if(!svg) return
 
-for(let p in visible){
+  svg.style.cursor=(hintEnabled||spoilerEnabled)?"pointer":"not-allowed"
 
-let page=pages[p]
+  svg.onclick=(e)=>{
+    let node=e.target.closest("g.node")
+    if(!node) return
 
-let icons=""
-if(hintEnabled){
-if(page.search) icons+=" 🔎"
-if(page.idea) icons+=" 💡"
-}
+    let id=node.id.match(/\d+/)?.[0]
+    if(!id) return
 
-// ★ ネタバレキーワード表示
-let keywordText=""
-if(spoilerEnabled && page.keyword){
-keywordText=`<br><span style="
-color:#fff;
-background:#d9534f;
-padding:2px 6px;
-border-radius:4px;
-font-size:12px">
-🔑 ${page.keyword}
-</span>`
+    if(!(hintEnabled||spoilerEnabled)) return
+
+    currentOpenId===id?closeModal():showHint(id)
+  }
 }
 
-let title = (p === "0") ? "スタート" : p
-
-g+=`${p}["${title}<br>Lv${page.lv}${icons}${keywordText}"]\n`
-}
-
-for(let p in visible){
-pages[p].next.forEach(n=>{
-if(visible[n]) g+=`${p}-->${n}\n`
-})
-}
-
-if(hintEnabled){
-for(let p in visible){
-let page=pages[p]
-
-if(!visited[p]){
-g+=`style ${p} fill:#ffcccc\n`
-continue
-}
-
-if(page.keywordWords==1){
-g+=`style ${p} fill:#c8f7c5\n`
-}
-else if(page.keywordWords==2){
-g+=`style ${p} fill:#cce5ff\n`
-}
-}
-}
-
-mermaid.render("graphDiv", g).then(res=>{
-document.getElementById("mermaid").innerHTML = res.svg
-bindEvents()
-})
-
-}
-
-// ノードクリック
-function bindEvents(){
-
-let svg=document.querySelector("#mermaid svg")
-if(!svg) return
-
-svg.style.cursor = hintEnabled ? "pointer" : "not-allowed"
-
-svg.onclick=(e)=>{
-
-let node=e.target.closest("g.node")
-if(!node) return
-
-let id=node.id.match(/\d+/)?.[0]
-if(!id) return
-
-if(!hintEnabled) return
-
-if(currentOpenId === id){
-closeModal()
-}else{
-currentOpenId = id
-showHint(id)
-}
-
-}
-}
-
-// ヒント表示
+// 表示
 function showHint(id){
+  let p=pages[id]
+  let unlocked=JSON.parse(localStorage.getItem("hintUnlock")||"{}")
 
-if(!hintEnabled) return
+  let html=`<b>ページ ${id}</b><br><br>`
 
-let p=pages[id]
-if(!p) return
+  if(hintEnabled && p.search){
+    let open=unlocked["s"+id]
+    html+=`<button class="hintBtn" onclick="unlock('s',${id})">
+      ${open?"🔒隠す":"🔍検索ヒント"}
+    </button>
+    <div class="hintContent ${open?"":"locked"}">
+      ${open ? p.search : fakeText(2)}
+    </div>`
+  }
 
-let unlocked = JSON.parse(localStorage.getItem("hintUnlock") || "{}")
+  if(hintEnabled && p.idea){
+    let open=unlocked["i"+id]
+    html+=`<button class="hintBtn" onclick="unlock('i',${id})">
+      ${open?"🔒隠す":"💡ひらめきヒント"}
+    </button>
+    <div class="hintContent ${open?"":"locked"}">
+      ${open ? p.idea : fakeText(2)}
+    </div>`
+  }
 
-let html=`<b>ページ ${id}</b><br>Lv:${p.lv}<br><br>`
+  if(spoilerEnabled && p.keyword){
+    let open=unlocked["k"+id]
+    html+=`<button class="hintBtn" onclick="unlock('k',${id})">
+      ${open?"🔒隠す":"🔑ネタバレ（キーワード）"}
+    </button>
+    <div class="hintContent ${open?"":"locked"}">
+      ${open ? p.keyword : fakeText(1)}
+    </div>`
+  }
 
-if(p.search){
-let open = unlocked["s"+id]
-let viewed = unlocked["v_s"+id]
-
-html+=`<button class="hintBtn" onclick="unlock('s',${id})">
-${open?"🔒隠す":"🔍検索ヒント"}
-</button>
-
-<div class="hintContent ${open?"open":"locked"} ${viewed?"viewed":""}">
-${open?p.search:"（クリックで表示）"}
-</div>`
+  modalBody.innerHTML=html
+  modal.style.display="flex"
 }
 
-if(p.idea){
-let open = unlocked["i"+id]
-let viewed = unlocked["v_i"+id]
-
-html+=`<button class="hintBtn" onclick="unlock('i',${id})">
-${open?"🔒隠す":"💡ひらめきヒント"}
-</button>
-
-<div class="hintContent ${open?"open":"locked"} ${viewed?"viewed":""}">
-${open?p.idea:"（クリックで表示）"}
-</div>`
-}
-
-modalBody.innerHTML=html
-modal.style.display="flex"
-}
-
-// トグル
+// トグル（完全修正版）
 function unlock(t,id){
+  let u=JSON.parse(localStorage.getItem("hintUnlock")||"{}")
 
-if(!hintEnabled) return
+  let key=t+id
+  let viewedKey="v_"+t+id
 
-let u = JSON.parse(localStorage.getItem("hintUnlock") || "{}")
-let key = t + id
-let viewedKey = "v_" + t + id
+  if(u[key]) delete u[key]
+  else{
+    u[key]=1
+    u[viewedKey]=1
+  }
 
-if(u[key]){
-delete u[key]
-}else{
-u[key]=1
-u[viewedKey]=1
-}
+  localStorage.setItem("hintUnlock",JSON.stringify(u))
 
-localStorage.setItem("hintUnlock", JSON.stringify(u))
-showHint(id)
+  render()
+  showHint(id)
 }
 
 function closeModal(){
-modal.style.display="none"
-currentOpenId=null
+  modal.style.display="none"
+  currentOpenId=null
 }
-
 </script>
 
 </body>
