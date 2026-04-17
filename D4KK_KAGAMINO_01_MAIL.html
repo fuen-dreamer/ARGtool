@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mail</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f3f4;
+}
+
+/* 上部バー */
+.topbar {
+  height: 56px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.search {
+  background: #f1f3f4;
+  padding: 8px 16px;
+  border-radius: 24px;
+  width: 300px;
+  color: #777;
+}
+
+/* レイアウト */
+.layout {
+  display: flex;
+}
+
+/* サイドバー */
+.sidebar {
+  width: 220px;
+  padding: 10px;
+}
+
+.menu-item {
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #e8f0fe;
+}
+
+/* 未読バッジ */
+.badge {
+  background: #1a73e8;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+}
+
+/* メイン */
+.main {
+  flex: 1;
+}
+
+/* 受信トレイ */
+.inbox {
+  max-width: 800px;
+  margin: 20px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mail-item {
+  display: grid;
+  grid-template-columns: 32px 32px 1fr auto;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.mail-item.unread {
+  font-weight: bold;
+}
+
+.mail-item:hover {
+  background: #f5f7f7;
+}
+
+.checkbox {
+  text-align: center;
+}
+
+/* スター */
+.star {
+  cursor: pointer;
+  color: #ccc;
+}
+
+.star.active {
+  color: gold;
+}
+
+.sender {
+  font-size: 14px;
+}
+
+.subject-line {
+  font-size: 13px;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 右側 */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 添付アイコン */
+.clip {
+  font-size: 14px;
+  color: #5f6368;
+}
+
+/* 時刻 */
+.time {
+  font-size: 12px;
+  color: #999;
+}
+
+/* メール詳細 */
+.mail-view {
+  display: none;
+  max-width: 800px;
+  margin: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.mail-view.active {
+  display: block;
+}
+
+.header {
+  padding: 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+.subject-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.meta {
+  font-size: 12px;
+  color: #666;
+  margin-top: 6px;
+}
+
+.body {
+  padding: 20px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+
+/* 添付 */
+.file {
+  padding: 20px;
+  cursor: pointer;
+}
+
+/* モーダル */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal img {
+  max-width: 90%;
+  opacity: 0;
+  transition: 1.2s;
+}
+
+.modal img.show {
+  opacity: 1;
+}
+
+.loader {
+  position: absolute;
+  color: #ccc;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.3; }
+}
+
+/* ===== スマホ対応 ===== */
+@media (max-width: 600px) {
+
+  .sidebar {
+    display: none;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  .inbox {
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .mail-item {
+    grid-template-columns: 24px 24px 1fr auto;
+    padding: 10px 8px;
+  }
+
+  .sender {
+    font-size: 13px;
+  }
+
+  .subject-line {
+    font-size: 12px;
+  }
+
+  .right {
+    gap: 6px;
+  }
+
+  .time {
+    font-size: 11px;
+  }
+
+  .clip {
+    font-size: 12px;
+  }
+
+  .mail-view {
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .header {
+    padding: 12px;
+  }
+
+  .body {
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  .file img {
+    width: 100px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="search">メールを検索</div>
+</div>
+
+<div class="layout">
+
+  <!-- サイドバー -->
+  <div class="sidebar">
+    <div class="menu-item">
+      受信トレイ <span class="badge" id="unreadCount">1</span>
+    </div>
+    <div class="menu-item">送信済み</div>
+    <div class="menu-item">ゴミ箱</div>
+  </div>
+
+  <!-- メイン -->
+  <div class="main">
+
+    <!-- 受信トレイ -->
+    <div class="inbox" id="inbox">
+
+      <div class="mail-item unread" id="mailItem" onclick="openMail()">
+        <div class="checkbox"><input type="checkbox"></div>
+        <div class="star" onclick="toggleStar(event)">☆</div>
+
+        <div>
+          <div class="sender">AMGY</div>
+          <div class="subject-line">
+            【第四境界】『かがみの特殊少年更生施設』の調査を完了された皆様へ
+          </div>
+        </div>
+
+        <div class="right">
+          <span class="clip">📎</span>
+          <span class="time" id="listTime"></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- メール詳細 -->
+    <div class="mail-view" id="mailView">
+
+      <div onclick="backToInbox()" style="padding:10px;color:#1a73e8;cursor:pointer;">
+        ← 戻る
+      </div>
+
+      <div class="header">
+        <div class="subject-title">
+          【第四境界】『かがみの特殊少年更生施設』の調査を完了された皆様へ
+        </div>
+        <div class="meta">
+          AMGY &lt;amgy@daiyonkyokai.net&gt;<span class="clip">📎</span><span id="mailTime"></span><br>
+          To: 自分
+        </div>
+      </div>
+
+      <div class="body">
+        『かがみの特殊少年更生施設』の
+        調査を完了された皆様、ごきげんよう。
+
+        現実と仮想を繋ぐ組織「第四境界」
+        その現実サイドの案内役、AMGYです。
+
+        不思議な写真が一枚、私の世界に舞い込んできました。
+        どうすればいいか少し迷ったのですが、今日は貴方に送ります。
+
+        もしかしたら、皆様の起こした行動が
+        境界にわずかなゆらぎを生んだのかもしれませんね。
+        そう考えると、なんだかおかしいです。
+
+        こちらの写真は、私どものチェックで
+        特別な謎は存在しないと確認済みです。
+
+        新たな境界の扉が開く時
+        また貴方をご案内いたします。
+
+        その時を境界メンバー一同、
+        心からお待ちしております。
+
+        第四境界　AMGY
+
+        ※メールの内容に覚えのない方は、大変お手数ではございますが、メールを破棄していただけますよう、お願い申し上げます。
+      </div>
+
+      <div class="file" onclick="openModal()">
+        <div>1 個の添付ファイル</div>
+        <img src="CONFIRMED.jpg" width="120" alt="CONFIRMED.jpg">
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- モーダル -->
+<div class="modal" id="modal" onclick="closeModal()">
+  <div class="loader" id="loader">読み込み中...</div>
+  <img id="modalImg" src="CONFIRMED.jpg">
+</div>
+
+<script>
+function openMail() {
+  document.getElementById("inbox").style.display = "none";
+  document.getElementById("mailView").classList.add("active");
+  document.getElementById("mailItem").classList.remove("unread");
+  document.getElementById("unreadCount").textContent = "0";
+}
+
+function backToInbox() {
+  document.getElementById("mailView").classList.remove("active");
+  document.getElementById("inbox").style.display = "block";
+}
+
+function toggleStar(e) {
+  e.stopPropagation();
+  e.target.classList.toggle("active");
+  e.target.textContent =
+    e.target.classList.contains("active") ? "★" : "☆";
+}
+
+function openModal() {
+  const modal = document.getElementById("modal");
+  const img = document.getElementById("modalImg");
+  const loader = document.getElementById("loader");
+
+  modal.classList.add("active");
+
+  img.classList.remove("show");
+  loader.style.display = "block";
+
+  setTimeout(() => {
+    img.classList.add("show");
+    loader.style.display = "none";
+  }, 1200);
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("active");
+  document.getElementById("loader").style.display = "block";
+}
+
+/* 時刻 */
+function updateTime() {
+  const now = new Date();
+
+  if (!window.mailDate) window.mailDate = now;
+
+  const d = window.mailDate;
+  const days = ["日","月","火","水","木","金","土"];
+
+  const full =
+    `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${days[d.getDay()]}) ` +
+    `${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}`;
+
+  const diff = Math.floor((now - window.mailDate)/60000);
+
+  let listText;
+  if (diff < 1) listText = "たった今";
+  else if (diff < 60) listText = diff + "分前";
+  else if (diff < 1440) listText = Math.floor(diff/60) + "時間前";
+  else listText = `${d.getMonth()+1}/${d.getDate()}`;
+
+  document.getElementById("mailTime").textContent = full;
+  document.getElementById("listTime").textContent = listText;
+}
+
+updateTime();
+setInterval(updateTime, 60000);
+</script>
+
+</body>
+</html>
