@@ -155,7 +155,7 @@ function applyZoom(){
 
 function zoom(rate){
   currentScale*=rate
-  currentScale=Math.min(8,Math.max(0.2,currentScale))
+  currentScale=Math.min(10,Math.max(0.2,currentScale))
   applyZoom()
 }
 
