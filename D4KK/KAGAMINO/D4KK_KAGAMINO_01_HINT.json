@@ -113,7 +113,7 @@
   "111": { "lv": 7, "title": "九頭川雅道", "next": [112], "keyword": "九頭川雅道", "search": "", "idea": "", "keywordWords": 1 },
   "112": { "lv": 7, "title": "水無瀬研究院詳細", "next": [113], "keyword": "水無瀬研究院", "search": "", "idea": "", "keywordWords": 1 },
   "113": { "lv": 8, "title": "政府通達", "next": [114], "keyword": "未来創世部門", "search": "", "idea": "", "keywordWords": 1 },
-  "114": { "lv": 8, "title": "内部向け通達", "next": [115], "keyword": "特務省更生局 喜多見勇次郎", "search": "", "idea": "", "keywordWords": 1 },
+  "114": { "lv": 8, "title": "内部向け通達", "next": [115], "keyword": "特務省更生局 喜多見勇次郎", "search": "", "idea": "", "keywordWords": 2 },
   "115": { "lv": 8, "title": "久下沼院長個人フォルダ", "next": [116], "keyword": "美羽統一", "search": "", "idea": "", "keywordWords": 1 },
   "116": { "lv": 9, "title": "保護中: 特例機密ファイル", "next": [117], "keyword": "odense", "search": "インターネット検索", "idea": "あの街の名（小文字）", "keywordWords": 1 },
   "117": { "lv": 9, "title": "施術結果報告書", "next": [118], "keyword": "新たな人間創造の術式", "search": "", "idea": "", "keywordWords": 1 },
