@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Node Editor Pro Full</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+<style>
+body{
+ margin:0;
+ font-family:sans-serif;
+ overflow:hidden;
+}
+
+/* ===== ビューア ===== */
+#viewer{
+ position:absolute;
+ left:0;
+ top:0;
+ width:calc(100vw - 200px);
+ height:60vh;
+ background:#fff;
+ overflow:auto;
+ border-bottom:2px solid #ccc;
+}
+
+#viewer svg{
+ transform-origin:0 0;
+ display:block;
+}
+
+/* ===== ズーム ===== */
+#zoomUI{
+ position:absolute;
+ top:10px;
+ right:210px;
+ z-index:10;
+ background:#fff;
+ padding:6px;
+ border-radius:6px;
+ box-shadow:0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ===== スプリッター ===== */
+#splitter{
+ position:absolute;
+ left:0;
+ top:60vh;
+ width:100vw;
+ height:6px;
+ background:#999;
+ cursor:row-resize;
+ z-index:999;
+}
+#splitter:hover{background:#666}
+
+/* ===== 孤立ノード ===== */
+#isolatedPanel{
+ position:absolute;
+ right:0;
+ top:0;
+ width:200px;
+ height:60vh;
+ background:#f8f8f8;
+ border-left:2px solid #ccc;
+ overflow:auto;
+ font-size:12px;
+ padding:4px;
+}
+
+/* ===== 編集領域 ===== */
+#panel{
+ position:absolute;
+ left:0;
+ bottom:0;
+ width:100vw;
+ height:40vh;
+ background:#fff;
+ overflow:auto;
+ border-top:2px solid #ccc;
+}
+
+/* ===== テーブル ===== */
+#panel table{
+ border-collapse:collapse;
+ width:100%;
+ font-size:12px;
+ table-layout:fixed;
+}
+
+#panel td,#panel th{
+ border:1px solid #ccc;
+ padding:4px;
+ position:relative;
+ overflow:hidden;
+}
+
+input,textarea{
+ width:100%;
+ border:none;
+ font-size:12px;
+ box-sizing:border-box;
+}
+
+button{margin:2px}
+
+/* ===== 列リサイズ ===== */
+.resizer{
+ position:absolute;
+ right:0;
+ top:0;
+ width:6px;
+ height:100%;
+ cursor:col-resize;
+ user-select:none;
+}
+
+/* ===== 細列指定（ID / Lv / 削除） ===== */
+#panel th:nth-child(1),
+#panel td:nth-child(1){
+ width:50px;
+ max-width:50px;
+ text-align:center;
+}
+
+#panel th:nth-child(2),
+#panel td:nth-child(2){
+ width:40px;
+ max-width:40px;
+ text-align:center;
+}
+
+#panel th:nth-child(8),
+#panel td:nth-child(8){
+ width:60px;
+ max-width:60px;
+ text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== ビューア ===== -->
+<div id="viewer"></div>
+<div id="splitter"></div>
+
+<!-- ===== ズーム ===== -->
+<div id="zoomUI">
+<button onclick="zoomIn()">＋</button>
+<button onclick="zoomOut()">－</button>
+<button onclick="resetZoom()">reset</button>
+</div>
+
+<!-- ===== 孤立ノード ===== -->
+<div id="isolatedPanel">
+<b>孤立ノード</b>
+<div id="isolatedList"></div>
+</div>
+
+<!-- ===== 編集 ===== -->
+<div id="panel">
+<button onclick="addNode()">＋追加</button>
+<button onclick="downloadJSON()">JSON出力</button>
+<input type="file" onchange="importJSON(event)">
+<div id="grid"></div>
+</div>
+
+<script>
+mermaid.initialize({
+ startOnLoad:false,
+ flowchart:{
+  nodeSpacing:80,
+  rankSpacing:100,
+  curve:"linear"
+ }
+})
+
+let data={nodes:{}}
+let idCounter=0
+
+let scale=1
+let svgEl=null
+let focusId=null
+
+const viewer=document.getElementById("viewer")
+const grid=document.getElementById("grid")
+const splitter=document.getElementById("splitter")
+
+/* =========================
+   スプリッター
+========================= */
+let draggingSplitter=false
+
+splitter.addEventListener("mousedown",()=>{
+ draggingSplitter=true
+})
+
+document.addEventListener("mousemove",(e)=>{
+ if(!draggingSplitter) return
+
+ const vh=(e.clientY/window.innerHeight)*100
+ const top=Math.max(20,Math.min(80,vh))
+ const bottom=100-top
+
+ viewer.style.height=top+"vh"
+ document.getElementById("panel").style.height=bottom+"vh"
+ splitter.style.top=top+"vh"
+})
+
+document.addEventListener("mouseup",()=>{
+ draggingSplitter=false
+})
+
+/* =========================
+   保存
+========================= */
+function save(){
+ localStorage.setItem("nodeEditor",JSON.stringify(data))
+}
+
+function load(){
+ const s=localStorage.getItem("nodeEditor")
+ if(s){
+  data=JSON.parse(s)
+  idCounter=Math.max(...Object.keys(data.nodes).map(Number))+1||0
+ }else{
+  addNode()
+ }
+}
+
+/* =========================
+   キーワード
+========================= */
+function splitKeywords(str){
+ return str
+ ? str.replace(/\u3000/g,' ')
+   .replace(/[\n,]/g,' ')
+   .trim()
+   .split(/\s+/)
+   .filter(x=>x)
+ : []
+}
+
+function calcKW(k){
+ const a=splitKeywords(k)
+ if(a.length===1) return 1
+ if(a.length===2) return 2
+ if(a.length>=3) return -1
+ return 0
+}
+
+/* =========================
+   色
+========================= */
+function getColor(n){
+ const kw=calcKW(n.keyword)
+
+ if(n.lv==11) return "#f0ad4e"
+ if(n.lv==12) return "#e1bee7"
+
+ if(kw==1) return "#c8f7c5"
+ if(kw==2) return "#cce5ff"
+ if(kw==-1) return "#ffcccc"
+
+ return "#fff"
+}
+
+/* =========================
+   アイコン
+========================= */
+function getIcons(n){
+ let i=""
+ if(n.search) i+=" 🔍"
+ if(n.idea) i+=" 💡"
+ if(n.keyword) i+=" 🔑"
+ return i
+}
+
+/* =========================
+   追加
+========================= */
+function getNextId(){
+ const ids=Object.keys(data.nodes).map(Number).sort((a,b)=>a-b)
+ for(let i=0;i<ids.length;i++){
+  if(ids[i]!==i) return i
+ }
+ return ids.length
+}
+
+function addNode(){
+ const id=getNextId()
+ data.nodes[id]={
+  next:[],
+  title:"",
+  lv:0,
+  keyword:"",
+  search:"",
+  idea:""
+ }
+ save()
+ render()
+}
+
+/* =========================
+   到達判定
+========================= */
+function getReachable(){
+ const visited=new Set()
+ const stack=[0]
+
+ while(stack.length){
+  const id=stack.pop()
+  if(visited.has(id)) continue
+  visited.add(id)
+
+  const n=data.nodes[id]
+  if(!n) continue
+
+  n.next.forEach(t=>{
+   if(!visited.has(t)) stack.push(t)
+  })
+ }
+
+ return visited
+}
+
+/* =========================
+   Mermaid
+========================= */
+function buildMermaid(){
+ let g="flowchart TB\n"
+ const reachable=getReachable()
+
+ /* =========================
+    ノード生成
+ ========================= */
+ Object.entries(data.nodes).forEach(([id,n])=>{
+
+  let border =
+   focusId==id
+   ? "stroke:#ff0000,stroke-width:4px"
+   : "stroke:#333,stroke-width:1px"
+
+  let fill=getColor(n)
+  if(!reachable.has(Number(id))) fill="#ffe066"
+
+  const label=`
+<div style="padding:6px;font-size:12px;text-align:center">
+<b>${id}</b><br>
+${n.title||"？？？"}<br>
+Lv${n.lv}${getIcons(n)}
+</div>`
+
+  g+=`${id}["${label}"]\n`
+  g+=`style ${id} fill:${fill},${border}\n`
+ })
+
+ /* =========================
+    キーワードクラスタ
+ ========================= */
+ let keywordGroups={}
+ Object.entries(data.nodes).forEach(([id,n])=>{
+  if(!n.keyword) return
+  if(!keywordGroups[n.keyword]) keywordGroups[n.keyword]=[]
+  keywordGroups[n.keyword].push(id)
+ })
+
+ let keywordNodeMap={}
+ let kid=0
+
+ for(let kw in keywordGroups){
+
+  let nodes = keywordGroups[kw]
+  if(nodes.length < 2) continue
+
+  let hubId="kw"+(kid++)
+  keywordNodeMap[kw]=hubId
+
+  // ラベル無しクラスタ
+  g += `subgraph ${hubId}\n`
+
+  nodes.forEach(id=>{
+    g += `${id}\n`
+  })
+
+  g += `end\n`
+ }
+
+ /* =========================
+    エッジ集約（重複排除）
+ ========================= */
+ let edgeMap={}
+
+ Object.entries(data.nodes).forEach(([id,n])=>{
+
+  let fromHub = (n.keyword && keywordNodeMap[n.keyword])
+    ? keywordNodeMap[n.keyword]
+    : id
+
+  n.next.forEach(t=>{
+   if(!data.nodes[t]) return
+
+   let toNode=data.nodes[t]
+
+   let toHub = (toNode.keyword && keywordNodeMap[toNode.keyword])
+     ? keywordNodeMap[toNode.keyword]
+     : t
+
+   if(fromHub===toHub) return
+
+   let key = `${fromHub}-->${toHub}`
+
+   if(!edgeMap[key]){
+    edgeMap[key]={
+     fromHub,
+     toHub,
+     nodes:new Set()
+    }
+   }
+
+   edgeMap[key].nodes.add(id)
+  })
+ })
+
+ /* =========================
+    エッジ出力（ラベル付き）
+ ========================= */
+ for(let key in edgeMap){
+
+  let {fromHub,toHub,nodes}=edgeMap[key]
+
+  let label = Array.from(nodes).join(",")
+
+  if(fromHub.startsWith("kw")){
+    g += `${fromHub}-->|${label}|${toHub}\n`
+  }else{
+    g += `${fromHub}-->${toHub}\n`
+  }
+ }
+
+ return g
+}
+
+/* =========================
+   ビューア
+========================= */
+function renderViewer(){
+ const g=buildMermaid()
+ mermaid.render("m"+Date.now(),g).then(res=>{
+  viewer.innerHTML=res.svg
+  svgEl=viewer.querySelector("svg")
+  applyZoom()
+ })
+}
+
+/* =========================
+   ズーム
+========================= */
+function applyZoom(){
+ if(!svgEl)return
+ svgEl.style.transformOrigin="0 0"
+ svgEl.style.transform=`scale(${scale})`
+}
+
+function zoomIn(){scale*=1.2;applyZoom()}
+function zoomOut(){scale*=0.8;applyZoom()}
+function resetZoom(){scale=1;applyZoom()}
+
+/* =========================
+   孤立ノード
+========================= */
+function renderIsolatedPanel(){
+ const reachable=getReachable()
+ let html=""
+
+ Object.keys(data.nodes).forEach(id=>{
+  if(!reachable.has(Number(id))){
+   const n=data.nodes[id]
+   html+=`
+<div style="padding:4px;margin:2px;background:#ffdddd;cursor:pointer;border-radius:4px"
+onclick="focusNode(${id})">
+<b>${id}</b> ${n.title||"？？？"}
+</div>`
+  }
+ })
+
+ document.getElementById("isolatedList").innerHTML=html
+}
+
+/* =========================
+   フォーカス
+========================= */
+function focusNode(id){
+ focusId=id
+ render()
+}
+
+/* =========================
+   列リサイズ + 保存
+========================= */
+function makeResizable(){
+ const ths=document.querySelectorAll("#panel th")
+
+ ths.forEach(th=>{
+  const resizer=document.createElement("div")
+  resizer.className="resizer"
+  th.appendChild(resizer)
+
+  let startX,startWidth
+
+  resizer.addEventListener("mousedown",(e)=>{
+   startX=e.pageX
+   startWidth=th.offsetWidth
+
+   document.onmousemove=(e)=>{
+    const w=startWidth+(e.pageX-startX)
+    if(w>30) th.style.width=w+"px"
+   }
+
+   document.onmouseup=()=>{
+    document.onmousemove=null
+    saveColWidths()
+   }
+  })
+ })
+}
+
+/* ===== 列幅保存 ===== */
+function saveColWidths(){
+ const ths=document.querySelectorAll("#panel th")
+ const widths={}
+ ths.forEach((th,i)=>{
+  widths[i]=th.offsetWidth
+ })
+ localStorage.setItem("colWidths",JSON.stringify(widths))
+}
+
+function loadColWidths(){
+ const s=localStorage.getItem("colWidths")
+ if(!s) return
+
+ const widths=JSON.parse(s)
+ const ths=document.querySelectorAll("#panel th")
+
+ ths.forEach((th,i)=>{
+  if(widths[i]) th.style.width=widths[i]+"px"
+ })
+}
+
+/* =========================
+   グリッド
+========================= */
+function renderGrid(){
+ let html=`<table><thead><tr>
+<th>ID</th>
+<th>Lv</th>
+<th>タイトル</th>
+<th>next</th>
+<th>keyword</th>
+<th>検索</th>
+<th>ひらめき</th>
+<th>削除</th>
+</tr></thead><tbody>`
+
+ Object.entries(data.nodes).forEach(([id,n])=>{
+  html+=`
+<tr>
+<td onclick="focusNode(${id})">${id}</td>
+<td><input value="${n.lv}" onchange="update(${id},'lv',this.value)"></td>
+<td><input value="${n.title}" onchange="update(${id},'title',this.value)"></td>
+<td><input value="${n.next.join(',') || ''}" onchange="updateNext(${id},this.value)"></td>
+<td><input value="${n.keyword||''}" onchange="update(${id},'keyword',this.value)"></td>
+<td><textarea onchange="update(${id},'search',this.value)">${n.search||""}</textarea></td>
+<td><textarea onchange="update(${id},'idea',this.value)">${n.idea||""}</textarea></td>
+<td><button onclick="deleteNode(${id})">削除</button></td>
+</tr>`
+ })
+
+ html+="</tbody></table>"
+ grid.innerHTML=html
+
+ makeResizable()
+ loadColWidths()
+}
+
+/* =========================
+   更新・削除
+========================= */
+function update(id,key,val){
+ data.nodes[id][key]=(key==='lv')?Number(val):val
+ save();render()
+}
+
+function updateNext(id,val){
+ data.nodes[id].next = val
+  .split(',')
+  .map(x => x.trim())
+  .filter(x => x !== "")
+  .map(x => Number(x))
+  .filter(x => !isNaN(x))
+  .sort((a,b)=>a-b)
+
+ save();render()
+}
+
+function deleteNode(id){
+ const n = data.nodes[id]
+
+ const msg = `ノードを削除しますか？
+
+ID: ${id}
+タイトル: ${n.title || "（未設定）"}
+Lv: ${n.lv}
+next: ${n.next.join(",") || "なし"}`
+
+ if(!confirm(msg)) return
+
+ Object.values(data.nodes).forEach(n=>{
+  n.next=n.next.filter(x=>x!=id)
+ })
+
+ delete data.nodes[id]
+ save();render()
+}
+/* =========================
+   JSON
+========================= */
+function downloadJSON(){
+ const out={}
+ Object.entries(data.nodes).forEach(([id,n])=>{
+  out[id]={
+   lv:n.lv,
+   title:n.title,
+   next:n.next,
+   keyword:n.keyword||"",
+   search:n.search||"",
+   idea:n.idea||"",
+   keywordWords:calcKW(n.keyword||"")
+  }
+ })
+
+ const json="{\n"+Object.entries(out).map(([id,v])=>
+  `"${id}":${JSON.stringify(v)}`
+ ).join(",\n")+"\n}"
+
+ const blob=new Blob([json],{type:"application/json"})
+ const a=document.createElement("a")
+ a.href=URL.createObjectURL(blob)
+ a.download="nodes.json"
+ a.click()
+}
+
+function importJSON(e){
+ const f=e.target.files[0]
+ if(!f)return
+
+ const r=new FileReader()
+ r.onload=()=>{
+  data.nodes=JSON.parse(r.result)
+  save()
+  render()
+ }
+ r.readAsText(f)
+}
+
+/* =========================
+   render
+========================= */
+function render(){
+ renderViewer()
+ renderGrid()
+ renderIsolatedPanel()
+}
+
+/* =========================
+   init
+========================= */
+load()
+render()
+</script>
+
+</body>
+</html>
