@@ -69,6 +69,26 @@ body{
  padding:4px;
 }
 
+/* ===== インポートボタン ===== */
+.fileBtn{
+ display:inline-block;
+ padding:4px 8px;
+ background:#eee;
+ border:1px solid #ccc;
+ border-radius:4px;
+ cursor:pointer;
+ font-size:12px;
+}
+
+.fileBtn:hover{
+ background:#ddd;
+}
+
+/* ファイル入力は非表示 */
+.fileBtn input{
+ display:none;
+}
+
 /* ===== 編集領域 ===== */
 #panel{
  position:absolute;
@@ -163,7 +183,11 @@ button{margin:2px}
 <div id="panel">
 <button onclick="addNode()">＋追加</button>
 <button onclick="downloadJSON()">JSON出力</button>
+<label class="fileBtn">
+📥インポート
 <input type="file" onchange="importJSON(event)">
+</label>
+<button onclick="resetAll()">初期化</button>
 <div id="grid"></div>
 </div>
 
@@ -624,6 +648,31 @@ next: ${n.next.join(",") || "なし"}`
  delete data.nodes[id]
  save();render()
 }
+
+function resetAll(){
+
+ const msg = `現在の状態をすべて初期化します。
+
+・ノードはすべて削除されます
+・元には戻せません
+
+実行しますか？`
+
+ if(!confirm(msg)) return
+
+ // データ初期化
+ data = { nodes:{} }
+ idCounter = 0
+
+ // ローカルストレージ削除
+ localStorage.removeItem("nodeEditor")
+
+ // 初期ノード1つだけ作る（今の仕様維持）
+ addNode()
+
+ alert("初期化が完了しました")
+}
+
 /* =========================
    JSON
 ========================= */
@@ -635,8 +684,8 @@ function downloadJSON(){
    title:n.title,
    next:n.next,
    keyword:n.keyword||"",
-   search:n.search||"",
-   idea:n.idea||"",
+   search:(n.search||"").replace(/\n/g,"<br>"),
+   idea:(n.idea||"").replace(/\n/g,"<br>"),
    keywordWords:calcKW(n.keyword||"")
   }
  })
@@ -656,13 +705,39 @@ function importJSON(e){
  const f=e.target.files[0]
  if(!f)return
 
+ if(!confirm("現在のデータは上書きされます。\nJSONを取り込みますか？")) return
+
  const r=new FileReader()
  r.onload=()=>{
-  data.nodes=JSON.parse(r.result)
-  save()
-  render()
+  try{
+   const raw = JSON.parse(r.result)
+
+   // <br> → 改行 に戻す
+   const converted = {}
+
+   Object.entries(raw).forEach(([id,v])=>{
+    converted[id]={
+     ...v,
+     search: (v.search || "").replace(/<br>/g,"\n"),
+     idea: (v.idea || "").replace(/<br>/g,"\n")
+    }
+   })
+
+   data.nodes = converted
+
+   idCounter=Math.max(...Object.keys(data.nodes).map(Number))+1||0
+
+   save()
+   render()
+
+   alert("JSONの取り込みが完了しました")
+  }catch(e){
+   alert("JSONの読み込みに失敗しました")
+  }
  }
+
  r.readAsText(f)
+ e.target.value=""
 }
 
 /* =========================
