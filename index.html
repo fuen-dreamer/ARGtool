@@ -1,10 +1,484 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>ARGtool</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FUEN SYSTEM PORTAL</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Consolas","Courier New",monospace;
+    background:#050a14;
+    color:#bfefff;
+}
+
+/* ===== 背景グリッド ===== */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:
+        linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-1;
+}
+
+/* ===== ヘッダー ===== */
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+    border-bottom:1px solid rgba(0,255,255,0.2);
+    flex-wrap:wrap;
+    position:relative;
+}
+
+.logo{
+    color:#00ffff;
+    text-shadow:0 0 10px #00ffff;
+    font-size:14px;
+}
+
+/* ===== ハンバーガー ===== */
+#menuBtn{
+    display:none;
+    font-size:24px;
+    cursor:pointer;
+    color:#00ffff;
+}
+
+/* ナビ */
+nav{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+nav a{
+    margin-left:20px;
+    color:#7fdfff;
+    text-decoration:none;
+}
+
+nav a:hover{
+    color:#00ffff;
+    text-shadow:0 0 8px #00ffff;
+}
+
+/* ===== タイトル ===== */
+.title{
+    text-align:center;
+    margin-top:40px;
+}
+
+.title h1{
+    font-size:48px;
+    letter-spacing:4px;
+    color:#00ffff;
+    text-shadow:0 0 20px #00ffff;
+}
+
+/* ===== コンテナ ===== */
+.container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    max-width:1200px;
+    margin:40px auto;
+    padding:20px;
+}
+
+/* 横長 */
+.wide{
+    grid-column:1 / -1;
+}
+
+/* ===== パネル ===== */
+.panel{
+    background:rgba(0,20,40,0.7);
+    border:1px solid rgba(0,255,255,0.3);
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 0 20px rgba(0,255,255,0.1);
+    position:relative;
+}
+
+/* パネル光ライン */
+.panel::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:2px;
+    background:linear-gradient(90deg, transparent, #00ffff, transparent);
+}
+
+/* 見出し */
+.panel h2{
+    color:#00ffff;
+    margin-top:0;
+    border-left:4px solid #00ffff;
+    padding-left:10px;
+}
+
+/* ===== プロフィール ===== */
+.profile-icon{
+    width:120px;
+    height:120px;
+    border:2px solid #00ffff;
+    border-radius:50%;
+    margin:20px auto;
+    overflow:hidden;
+    box-shadow:0 0 15px #00ffff;
+}
+
+.profile-icon img{
+    width:100%;
+    height:100%;
+    object-fit:cover; /* トリミング */
+}
+
+.profile-name{
+    text-align:center;
+    margin-top:10px;
+}
+
+/* メイン名前 */
+.main-name{
+    display:block;
+    font-size:24px;
+    color:#00ffff;
+    letter-spacing:4px;
+    text-shadow:0 0 12px #00ffff;
+}
+
+/* フリガナ */
+.sub-name{
+    display:block;
+    font-size:12px;
+    color:#7fdfff;
+    letter-spacing:3px;
+    margin-top:5px;
+}
+
+/* ===== プロジェクト ===== */
+.project{
+    border:1px solid rgba(0,255,255,0.3);
+    border-radius:8px;
+    padding:15px;
+    margin:10px 0;
+    transition:0.3s;
+    cursor:pointer;
+}
+
+.project:hover{
+    background:rgba(0,255,255,0.1);
+    box-shadow:0 0 15px #00ffff;
+    transform:translateX(5px);
+}
+
+.project-title{
+    font-weight:bold;
+    color:#00ffff;
+}
+
+/* ===== 下部情報 ===== */
+.footer-panels{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+    max-width:1200px;
+    margin:20px auto;
+    padding:20px;
+}
+
+.small{
+    font-size:12px;
+    color:#7fdfff;
+}
+
+.status{
+    color:#00ff9f;
+    text-shadow:0 0 8px #00ff9f;
+}
+
+/* ===== フッター ===== */
+footer{
+    text-align:center;
+    padding:20px;
+    border-top:1px solid rgba(0,255,255,0.2);
+    font-size:12px;
+}
+
+/* ===== BOOT OVERLAY ===== */
+#bootOverlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#050a14;
+    color:#00ffff;
+    z-index:9999;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    font-family:"Consolas","Courier New",monospace;
+}
+
+/* 背景グリッド */
+#bootOverlay::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:
+        linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+    background-size:40px 40px;
+}
+
+/* プログレスバー */
+#progressBox{
+    width:60%;
+    height:18px;
+    border:1px solid #00ffff;
+}
+
+#bar{
+    height:100%;
+    width:0%;
+    background:#00ffff;
+    box-shadow:0 0 10px #00ffff;
+}
+
+/* タイピング */
+#typing{
+    margin-top:20px;
+    white-space:pre-line;
+    text-align:center;
+}
+
+.cursor{
+    display:inline-block;
+    width:10px;
+    background:#00ffff;
+    margin-left:5px;
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0;}
+}
+
+/* ===== スマホ ===== */
+@media (max-width:768px){
+
+    #menuBtn{ display:block; }
+
+    nav{
+        position:absolute;
+        top:60px;
+        right:0;
+        background:#050a14;
+        width:200px;
+        border:1px solid rgba(0,255,255,0.3);
+        display:none;
+        flex-direction:column;
+        padding:10px;
+        box-shadow:0 0 15px rgba(0,255,255,0.2);
+    }
+
+    nav.active{ display:flex; }
+
+    nav a{
+        margin:10px 0;
+    }
+
+    .container{
+        grid-template-columns:1fr;
+    }
+
+    .wide{
+        grid-column:auto;
+    }
+
+    .footer-panels{
+        grid-template-columns:1fr;
+    }
+
+    .title h1{
+        font-size:28px;
+    }
+}
+</style>
 </head>
+
 <body>
-    <h1>ようこそ</h1>
+
+<header>
+    <div class="logo">● FUEN SYSTEM PORTAL //</div>
+    <div id="menuBtn">☰</div>
+
+    <nav id="navMenu">
+        <a href="#">HOME</a>
+        <a href="https://x.com/fuen_dreamer" target="_blank">CONTACT</a>
+    </nav>
+</header>
+
+<div class="title">
+    <h1>FUEN SYSTEM PORTAL</h1>
+    <div>// WELCOME TO PORTAL //</div>
+</div>
+
+<div class="container">
+
+    <div class="panel wide">
+        <h2>CONCEPT</h2>
+        <p>このシステムは、ARGをより多くの人が楽しめるように設計されています。</p>
+        <p>「一緒に遊ぶ人がいない」「難しくて進めない」<br>そうした理由で、楽しむことを諦めてしまう状況を減らしたいと考えています。</p>
+        <p>ソロでも無理なく遊べるよう、段階的なヒント設計を取り入れています。</p>
+        <p>いつでも、誰でも、自分のペースで楽しめる体験を提供します。</p>
+        <p>プレイヤーと作品のあいだに立ち、体験をつなぐ橋渡し役として、<br>その魅力をより多くの人へ届けるサポートを行っています。</p>
+    </div>
+
+    <!-- プロフィール -->
+    <div class="panel">
+        <h2>PROFILE</h2>
+        <div class="profile-icon"><img src="images/profile.jpg" alt="profile"></div>
+        <div class="profile-name">
+            <span class="sub-name">ふうえん</span>
+            <span class="main-name">風簷</span>
+        </div>
+        <p>ARGを追いかけている一介の一般人</p>
+        <div class="small">STATUS : <span class="status">ONLINE</span><br>ROLE : MEDIATOR</div>
+    </div>
+
+    <div class="panel">
+        <h2>PROJECTS</h2>
+            <div class="project" data-url="https://fuen-dreamer.github.io/ARGtool/HintViewer/HintViewerEditor">
+                <div class="project-title">ヒントツクール</div>
+                <div class="small">ヒント作成・管理ツール</div>
+            </div>
+
+            <div class="project" data-url="https://fuen-dreamer.github.io/ARGtool/HintViewer/HintViewer.html">
+                <div class="project-title">ヒントビューア</div>
+                <div class="small">ヒント閲覧・体験アプリ</div>
+            </div>
+
+            <div class="project" data-url="https://lit.link/fuen_dreamer">
+                <div class="project-title">その他の制作物</div>
+                <div class="small">コンテンツ一覧</div>
+            </div>
+    </div>
+
+</div>
+
+<!-- 下部 -->
+<div class="footer-panels">
+
+    <div class="panel">
+        <h2>NEWS</h2>
+        <div class="small">2026.04.24 ポータルサイト公開</div>
+    </div>
+
+    <div class="panel">
+        <h2>SYSTEM</h2>
+        <div class="small">
+            USER : GUEST<br>
+            VERSION : 1.0.0<br>
+            STATUS : <span class="status">OK</span>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    © FUEN SYSTEM PORTAL / ALL SYSTEMS OPERATIONAL
+</footer>
+
+<!-- ===== BOOT OVERLAY ===== -->
+<div id="bootOverlay">
+    <div id="progressBox">
+        <div id="bar"></div>
+    </div>
+
+    <div id="typing"></div><span class="cursor"></span>
+</div>
+
+<script>
+
+/* ===== 進捗バー ===== */
+let p = 0;
+function progress(){
+    p += Math.random()*12;
+
+    if(p >= 100){
+        p = 100;
+        bar.style.width = p + "%";
+        startTyping();
+        return;
+    }
+
+    bar.style.width = p + "%";
+    setTimeout(progress, 70);
+}
+
+/* ===== タイピング（高速） ===== */
+const text =
+`SYSTEM ONLINE
+WELCOME USER
+
+LOADING PORTAL...`;
+
+let i = 0;
+
+function startTyping(){
+    function t(){
+        if(i < text.length){
+            typing.textContent += text[i];
+            i++;
+            setTimeout(t, 18); // 速め
+        }else{
+            setTimeout(hideOverlay, 400);
+        }
+    }
+    t();
+}
+
+/* ===== フェードアウト ===== */
+function hideOverlay(){
+ bootOverlay.style.opacity="0";
+ setTimeout(()=>bootOverlay.remove(),1000);
+}
+
+window.addEventListener("load",progress);
+
+/* ハンバーガー */
+menuBtn.onclick=()=>navMenu.classList.toggle("active");
+
+document.addEventListener("click",(e)=>{
+ if(!menuBtn.contains(e.target)&&!navMenu.contains(e.target)){
+  navMenu.classList.remove("active");
+ }
+});
+
+document.querySelectorAll(".project").forEach(el=>{
+    el.addEventListener("click", ()=>{
+        const url = el.dataset.url;
+        if(url){
+            window.open(url, "_blank"); // 別タブ
+        }
+    });
+});
+</script>
+
 </body>
 </html>
