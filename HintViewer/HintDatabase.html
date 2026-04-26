@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HINT DATABASE | FUEN SYSTEM PORTAL</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Consolas","Courier New",monospace;
+    background:#050a14;
+    color:#bfefff;
+}
+
+/* グリッド */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:
+        linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-1;
+}
+
+/* ヘッダー */
+header{
+    display:flex;
+    justify-content:space-between;
+    padding:20px 30px;
+    border-bottom:1px solid rgba(0,255,255,0.2);
+}
+
+.logo{
+    color:#00ffff;
+    text-shadow:0 0 10px #00ffff;
+}
+
+nav a{
+    margin-left:20px;
+    color:#7fdfff;
+    text-decoration:none;
+}
+
+/* タイトル */
+.title{
+    text-align:center;
+    margin-top:30px;
+}
+
+.title h1{
+    color:#00ffff;
+    text-shadow:0 0 15px #00ffff;
+}
+
+/* コンテナ */
+.container{
+    max-width:1100px;
+    margin:40px auto;
+    padding:20px;
+}
+
+/* ===== クリエイター ===== */
+.creator{
+    margin-bottom:40px;
+}
+
+/* 見出し */
+.creator-header{
+    font-size:18px;
+    color:#00ffff;
+    margin-bottom:10px;
+    text-shadow:0 0 10px #00ffff;
+}
+
+/* ===== 作品 ===== */
+.work{
+    background:rgba(0,20,40,0.7);
+    border:1px solid rgba(0,255,255,0.3);
+    border-radius:10px;
+    padding:15px;
+    margin:10px 0;
+    transition:0.3s;
+}
+
+.work:hover{
+    box-shadow:0 0 15px #00ffff;
+    transform:translateX(5px);
+}
+
+/* タイトル */
+.work-title{
+    font-size:16px;
+    color:#00ffff;
+}
+
+/* リンク */
+.link{
+    display:inline-block;
+    margin-top:8px;
+    font-size:12px;
+    color:#7fdfff;
+    text-decoration:none;
+}
+
+.link:hover{
+    color:#00ffff;
+}
+
+/* ボタン */
+.open-btn{
+    display:inline-block;
+    margin-top:10px;
+    padding:6px 12px;
+    border:1px solid #00ffff;
+    color:#00ffff;
+    text-decoration:none;
+    font-size:12px;
+}
+
+.open-btn:hover{
+    background:#00ffff;
+    color:#000;
+    box-shadow:0 0 10px #00ffff;
+}
+
+/* フッター */
+footer{
+    text-align:center;
+    padding:20px;
+    border-top:1px solid rgba(0,255,255,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">● FUEN SYSTEM PORTAL //</div>
+    <nav>
+        <a href="https://fuen-dreamer.github.io/ARGtool">HOME</a>
+    </nav>
+</header>
+
+<div class="title">
+    <h1>HINT DATABASE</h1>
+    <div>// ARCHIVE //</div>
+</div>
+
+<div class="container">
+
+    <!-- ===== クリエイター ===== -->
+    <div class="creator">
+
+        <div class="creator-header">
+            CREATOR : <a href="https://www.daiyonkyokai.net" class="link" target="_blank">第四境界</a>
+        </div>
+
+        <!-- 作品 -->
+        <div class="work">
+            <div class="work-title">
+                <a href="https://www.daiyonkyokai.net/case-mark/003" class="link" target="_blank">かがみの特殊少年更生施設</a>
+            </div>
+
+            <a href="https://fuen-dreamer.github.io/ARGtool/D4KK/KAGAMINO/D4KK_KAGAMINO_01_HINT" class="open-btn" target="_blank">
+                ▶ OPEN HINT
+            </a>
+        </div>
+
+    </div>
+
+    <!-- ===== クリエイター ===== -->
+    <div class="creator">
+
+        <div class="creator-header">
+            CREATOR : <a href="https://www.sim3.net" class="link" target="_blank">SIM3</a>
+        </div>
+
+        <div class="work">
+            <div class="work-title">
+                <a href="https://note.com/sim/n/n9ccec3c0a871" class="link" target="_blank">Vtuber失踪案件</a>
+            </div>
+
+            <a href="https://fuen-dreamer.github.io/ARGtool/SIM3/ProjectSeries/001/SIM3_ProjectSeries_001_HINT" class="open-btn" target="_blank">
+                ▶ OPEN HINT
+            </a>
+        </div>
+
+        <div class="work">
+            <div class="work-title">
+                <a href="https://note.com/sim/n/n4d6e51ebda7e" class="link" target="_blank">MIND-INSPECTOR CASE-T2050013</a>
+            </div>
+
+            <a href="https://fuen-dreamer.github.io/ARGtool/SIM3/MNEMO/MNEMO_T2050013_HINT" class="open-btn" target="_blank">
+                ▶ OPEN HINT
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    © FUEN SYSTEM PORTAL / ALL SYSTEMS OPERATIONAL
+</footer>
+
+</body>
+</html>
