@@ -98,6 +98,48 @@ h1{font-size:20px;}
   line-height:1.4;
   word-break:break-word;
 }
+
+#guideBtn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  z-index:10000;
+
+  padding:10px 14px;
+  background:#333;
+  color:#fff;
+  text-decoration:none;
+  border-radius:8px;
+
+  font-size:13px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.3);
+
+  transition:0.2s;
+
+  opacity:0;
+  pointer-events:none;
+}
+
+#guideBtn.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+#credit{
+  margin-top:6px;
+  font-size:11px;
+  color:#bbb;
+  text-align:center;
+}
+
+#credit a{
+  color:#bbb;
+  text-decoration:underline;
+}
+
+#credit a:hover{
+  color:#666;
+}
 </style>
 </head>
 
@@ -118,8 +160,16 @@ h1{font-size:20px;}
 <span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔑</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> ネタバレ（ワンクッションあり）　※ネタバレモードのみ解放
 </div>
 
+<a id="guideBtn" href="https://fuen-dreamer.github.io/ARGtool/HintViewer/HintViewerGuide.html" target="_blank">❓ 利用ガイド</a>
+
 <div id="levelPanel"></div>
 <div id="mermaid"></div>
+
+<div id="credit">
+  このフロチャートは
+  <a href="https://fuen-dreamer.github.io/ARGtool/HintViewer/HintViewerPortal.html" target="_blank">このサイト</a>
+  で作成されました
+</div>
 
 <div id="modal">
   <div id="modalContent">
@@ -216,6 +266,7 @@ function runBoot(done){
     }else{
       setTimeout(()=>{
         overlay.style.display="none"
+        document.getElementById("guideBtn").classList.add("show")
         isFirstRender=false
         done&&done()
       },300)
