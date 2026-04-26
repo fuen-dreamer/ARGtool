@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヒントビューア 制作者向けマニュアル</title>
+
+<style>
+body{
+  font-family:sans-serif;
+  margin:0;
+  background:#f5f5f5;
+  line-height:1.7;
+}
+
+header{
+  background:#222;
+  color:#fff;
+  padding:20px;
+}
+
+section{
+  background:#fff;
+  padding:25px;
+  margin-bottom:10px;
+}
+
+h2{
+  border-left:6px solid #2196f3;
+  padding-left:10px;
+}
+
+.code{
+  background:#111;
+  color:#0f0;
+  padding:15px;
+  font-family:monospace;
+  overflow:auto;
+  font-size:13px;
+}
+
+.note{
+  background:#e3f2fd;
+  padding:10px;
+  border-left:5px solid #2196f3;
+  margin-top:10px;
+}
+
+.warn{
+  background:#fff3cd;
+  padding:10px;
+  border-left:5px solid #ffc107;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>ヒントビューア 制作者向けマニュアル</h1>
+<p>ARG・謎解き用ヒントシステムの構築ガイド</p>
+</header>
+
+<section>
+<h2>① ファイル構成</h2>
+
+<div class="code">
+Webサイト<br>
+ ├ HintViewer.html　※このファイル名は適宜変更していただいて構いません<br>
+ ├ config.json<br>
+ └ nodes.json
+</div>
+
+<p>
+この3ファイルだけで動作します。
+</p>
+
+</section>
+
+<section>
+<h2>② config.json の説明</h2>
+
+<div class="code">
+{<br>
+  　"pageTitle": "ページタイトル",<br>
+  　"headerTitle": "ヘッダー表示タイトル",<br>
+  　"bootMessage": "BOOTING...",<br>
+  　"maxLevel": 12,<br>
+  　"goalLevel": 11,<br>
+  　"exLevel": 12<br>
+}
+</div>
+
+<h3>各項目</h3>
+
+<ul>
+<li><b>pageTitle</b>：ブラウザタブのタイトル</li>
+<li><b>headerTitle</b>：画面上部タイトル</li>
+<li><b>bootMessage</b>：起動時の演出テキスト</li>
+<li><b>maxLevel</b>：最大Lv（表示上限）</li>
+<li><b>goalLevel</b>：ゴール扱いLv</li>
+<li><b>exLevel</b>：EX扱いLv</li>
+</ul>
+
+<div class="warn">
+goalLevel と exLevel は同じ値にしないでください（エラーになります）
+</div>
+
+</section>
+
+<section>
+<h2>③ nodes.json の基本構造</h2>
+
+<div class="code">
+{<br>
+  　"0":{<br>
+  　　"lv":0,<br>
+  　　"title":"スタート",<br>
+  　　"next":["1"]<br>
+  　},<br>
+
+  　"1":{<br>
+  　　"lv":1,<br>
+  　　"title":"最初の問題",<br>
+  　　"next":["2","3"],<br>
+  　　"search":"〇〇で検索",<br>
+  　　"idea":"〇〇に注目",<br>
+  　　"keyword":"答え",<br>
+  　　"keywordWords":1<br>
+  　}<br>
+}
+</div>
+
+</section>
+
+<section>
+<h2>④ ノード項目の詳細</h2>
+
+<ul>
+<li><b>lv</b>：レベル（表示制御に使用）</li>
+<li><b>title</b>：タイトル（ネタバレ制御対象）</li>
+<li><b>next</b>：遷移先ノードID配列</li>
+<li><b>search</b>：検索ヒント</li>
+<li><b>idea</b>：ひらめきヒント</li>
+<li><b>keyword</b>：答え（ネタバレ）　※キーワードは半角スペースで区切ってください</li>
+<li><b>keywordWords</b>：ヒント色制御</li>
+</ul>
+
+<h3>keywordWords の意味</h3>
+
+<ul>
+<li>0 → キーワードなし</li>
+<li>1 → 1ワード（緑）</li>
+<li>2 → 2ワード（青）</li>
+</ul>
+
+</section>
+
+<section>
+<h2>⑤ クラスタ（自動グループ化）</h2>
+
+<p>
+同じ keyword を持つノードは自動でグループ化されます。
+</p>
+
+<div class="code">
+"keyword": "同じ単語"
+</div>
+
+<p>
+→ Mermaid上でまとまって表示されます
+</p>
+
+</section>
+
+<section>
+<h2>⑥ よくあるミス</h2>
+
+<ul>
+<li>nextのIDが存在しない</li>
+<li>lvがmaxLevelより大きい</li>
+<li>config.jsonの書式ミス</li>
+</ul>
+
+</section>
+
+<section>
+<h2>⑦ 注意事項</h2>
+
+<div class="warn">
+<ul>
+<li>本ソースコードは自由に改変してご利用いただけます。</li>
+<li>画面下部のクレジット表記は削除しても問題ありませんが、可能であれば別の場所に記載していただけると嬉しいです。</li>
+<li>本ツールの利用・改変によって発生した問題については、制作者は責任を負いません。自己責任でご利用ください。</li>
+</ul>
+</div>
+
+</section>
+
+<section>
+<h2>まとめ</h2>
+
+<p>
+制作の流れは以下です：
+</p>
+
+<ol>
+<li>config.json を編集</li>
+<li>nodes.json を作成</li>
+<li>ブラウザで確認</li>
+<li>調整</li>
+</ol>
+
+<p>
+重要なのは <b>nodes.json の設計</b> です。<br>
+ここがゲーム体験を決めます。
+</p>
+
+</section>
+
+</body>
+</html>
