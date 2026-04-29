@@ -2,46 +2,114 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>START</title>
 
 <style>
+/* =========================
+   ベース
+========================= */
 body{
   margin:0;
   font-family:"Consolas","Segoe UI","Meiryo",sans-serif;
   background:#0c1424;
   color:#d7f7ff;
+
   display:flex;
   justify-content:center;
   align-items:center;
+
   height:100vh;
+  padding:12px; /* スマホ余白対策 */
+  box-sizing:border-box;
 }
 
+/* =========================
+   メインボックス
+========================= */
 .box{
   text-align:center;
-  padding:30px;
+  padding:26px;
+
   border:1px solid #2a3a55;
   background:#101a2a;
+
   box-shadow:0 0 20px rgba(77,166,255,0.3);
   border-radius:10px;
+
+  width:100%;
+  max-width:360px; /* スマホでの横広がり防止 */
 }
 
+/* =========================
+   タイトル
+========================= */
 h1{
   color:#4da6ff;
+  margin:0 0 10px 0;
+  font-size:22px;
+  letter-spacing:1px;
 }
 
+/* =========================
+   テキスト
+========================= */
+p{
+  margin:0;
+  opacity:0.8;
+  font-size:14px;
+}
+
+/* =========================
+   ボタン
+========================= */
 button{
   margin-top:20px;
   padding:12px 24px;
+
   background:#22334a;
   border:1px solid #4da6ff;
+
   color:#fff;
   font-weight:bold;
+
   cursor:pointer;
+  transition:0.2s;
+
+  width:100%; /* スマホで押しやすく */
 }
 
 button:hover{
   background:#4da6ff;
   color:#0c1424;
+}
+
+/* =========================
+   📱 スマホ最適化
+========================= */
+@media (max-width:768px){
+
+  body{
+    padding:10px;
+  }
+
+  .box{
+    padding:20px;
+    max-width:320px;
+  }
+
+  h1{
+    font-size:20px;
+  }
+
+  p{
+    font-size:13px;
+  }
+
+  button{
+    padding:14px;
+    font-size:15px;
+  }
 }
 </style>
 </head>
