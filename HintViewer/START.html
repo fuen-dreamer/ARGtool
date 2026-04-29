@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>START</title>
+
+<style>
+body{
+  margin:0;
+  font-family:"Consolas","Segoe UI","Meiryo",sans-serif;
+  background:#0c1424;
+  color:#d7f7ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.box{
+  text-align:center;
+  padding:30px;
+  border:1px solid #2a3a55;
+  background:#101a2a;
+  box-shadow:0 0 20px rgba(77,166,255,0.3);
+  border-radius:10px;
+}
+
+h1{
+  color:#4da6ff;
+}
+
+button{
+  margin-top:20px;
+  padding:12px 24px;
+  background:#22334a;
+  border:1px solid #4da6ff;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#4da6ff;
+  color:#0c1424;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>TRACE SYSTEM</h1>
+  <p>Enter the maze</p>
+
+  <button onclick="start()">START</button>
+</div>
+
+<script>
+
+// 初期化
+function start(){
+
+  const state={
+    current:"0",
+    visited:["0"]
+  }
+
+  localStorage.setItem("mazeState",JSON.stringify(state))
+
+  location.href="https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/node_0"
+}
+
+</script>
+
+</body>
+</html>
