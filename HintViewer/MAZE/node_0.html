@@ -210,7 +210,7 @@ let pages={}
 /* =========================
    データロード
 ========================= */
-fetch("nodes.json").then(r=>r.json()).then(d=>{
+fetch("https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/nodes.json").then(r=>r.json()).then(d=>{
   pages=d
 
   let state=JSON.parse(localStorage.getItem("mazeState"))||{
