@@ -151,8 +151,8 @@ button{margin:2px}
  text-align:center;
 }
 
-#panel th:nth-child(8),
-#panel td:nth-child(8){
+#panel th:nth-child(9),
+#panel td:nth-child(9){
  width:60px;
  max-width:60px;
  text-align:center;
@@ -321,7 +321,8 @@ function addNode(){
   lv:0,
   keyword:"",
   search:"",
-  idea:""
+  idea:"",
+  url:""
  }
  save()
  render()
@@ -585,6 +586,7 @@ function renderGrid(){
 <th>keyword</th>
 <th>検索</th>
 <th>ひらめき</th>
+<th>URL</th>
 <th>削除</th>
 </tr></thead><tbody>`
 
@@ -598,6 +600,7 @@ function renderGrid(){
 <td><input value="${n.keyword||''}" onchange="update(${id},'keyword',this.value)"></td>
 <td><textarea onchange="update(${id},'search',this.value)">${n.search||""}</textarea></td>
 <td><textarea onchange="update(${id},'idea',this.value)">${n.idea||""}</textarea></td>
+<td><input value="${n.url||""}" onchange="update(${id},'url',this.value)"></td>
 <td><button onclick="deleteNode(${id})">削除</button></td>
 </tr>`
  })
@@ -686,7 +689,8 @@ function downloadJSON(){
    keyword:n.keyword||"",
    search:(n.search||"").replace(/\n/g,"<br>"),
    idea:(n.idea||"").replace(/\n/g,"<br>"),
-   keywordWords:calcKW(n.keyword||"")
+   keywordWords:calcKW(n.keyword||""),
+   url:n.url||""
   }
  })
 
