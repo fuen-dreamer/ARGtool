@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MAZE</title>
-
 <style>
 /* =========================
    全体サイバー背景
@@ -167,6 +167,87 @@ button:hover{
   font-size:12px;
   opacity:0.8;
   margin-top:4px;
+}
+
+@media (max-width:768px){
+
+  /* =========================
+     全体余白調整
+  ========================= */
+  body{
+    margin:10px;
+  }
+
+  /* =========================
+     タイトル
+  ========================= */
+  #title h2{
+    font-size:16px;
+  }
+
+  /* =========================
+     ヒント
+  ========================= */
+  #hint{
+    font-size:13px;
+    padding:8px;
+  }
+
+  /* =========================
+     選択肢（重要）
+  ========================= */
+  a{
+    font-size:22px;
+    padding:28px 18px;
+    margin:16px 0;
+  }
+
+  a:hover{
+    transform:none; /* スマホでズレ防止 */
+  }
+
+  /* =========================
+     ボタン
+  ========================= */
+  button{
+    width:100%;
+    font-size:18px;
+    padding:20px;
+    margin-top:12px;
+  }
+
+  /* =========================
+     パスワードUI
+  ========================= */
+  .passwordBox{
+    font-size:18px;
+    padding:20px;
+  }
+
+  .passwordBox input{
+    font-size:18px;
+    padding:12px;
+  }
+
+  /* =========================
+     VIEWERボタン
+  ========================= */
+  .viewerPanel{
+    padding:24px;
+  }
+
+  .viewerTitle{
+    font-size:19px;
+  }
+
+  .viewerSub{
+    font-size:13px;
+  }
+
+  /* ゴール・行き止まり */
+  b{
+    font-size:18px;
+  }
 }
 </style>
 </head>
