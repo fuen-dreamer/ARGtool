@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TRACE LOG VIEWER</title>
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -156,27 +157,24 @@ marker path{
 
   #guide{
     font-size:11px;
-    line-height:1.4;
   }
 
   #current{
     font-size:13px;
   }
 
-  /* ノード文字を強制拡大 */
-  .nodeLabel,
-  .node .label{
-    font-size:18px !important;
-  }
-
-  /* マップ余白削減 */
-  #mermaid{
-    margin:4px;
+  /* 線強調 */
+  .edgePath path{
+    stroke-width:5px !important;
   }
 
   /* タップ操作を考慮 */
   .node rect{
     stroke-width:3px !important;
+  }
+
+  #mermaid{
+    margin:4px;
   }
 }
 </style>
