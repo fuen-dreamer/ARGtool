@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MAZE</title>
+
+<style>
+/* =========================
+   全体サイバー背景
+========================= */
+body{
+  font-family:"Consolas","Segoe UI","Meiryo",sans-serif;
+  margin:20px;
+
+  background:#0c1424;
+  color:#d7f7ff;
+}
+
+/* =========================
+   タイトル
+========================= */
+#title h2{
+  color:#4da6ff;
+  letter-spacing:1px;
+}
+
+/* =========================
+   ヒント
+========================= */
+#hint{
+  margin-top:6px;
+  padding:10px;
+
+  background:#111c2e;
+  border:1px solid #4da6ff;
+  border-radius:6px;
+
+  color:#9ffcff;
+}
+
+/* =========================
+   選択肢リンク
+========================= */
+a{
+  display:block;
+  padding:12px;
+  margin:8px 0;
+
+  background:#22334a;
+  border:1px solid #4da6ff;
+
+  color:#ffffff;
+  text-decoration:none;
+
+  transition:0.2s;
+}
+
+a:hover{
+  background:#4da6ff;
+  color:#0c1424;
+  transform:translateX(4px);
+}
+
+/* =========================
+   行き止まり
+========================= */
+b{
+  color:#ff4d4d;
+}
+
+/* =========================
+   通常ボタン（保守）
+========================= */
+button{
+  margin:6px 4px 0 0;
+  padding:10px 14px;
+
+  background:#111c2e;
+  border:1px solid #4da6ff;
+  color:#fff;
+
+  cursor:pointer;
+}
+
+button:hover{
+  background:#4da6ff;
+  color:#0c1424;
+}
+
+/* =========================
+   パスワードUI
+========================= */
+.passwordBox{
+  margin:10px 0;
+  padding:12px;
+
+  background:#111c2e;
+  border:1px solid #ffd166;
+
+  border-radius:6px;
+}
+
+.passwordBox div{
+  margin-bottom:8px;
+  color:#ffd166;
+  font-weight:bold;
+}
+
+.passwordBox input{
+  width:100%;
+  padding:8px;
+
+  background:#0c1424;
+  border:1px solid #4da6ff;
+  color:#fff;
+
+  outline:none;
+}
+
+.passwordBox button{
+  margin-top:8px;
+  width:100%;
+
+  background:#22334a;
+  border:1px solid #ffd166;
+  color:#fff;
+}
+
+.passwordBox button:hover{
+  background:#ffd166;
+  color:#0c1424;
+}
+
+/* =========================
+   VIEWERリンク（端末風）
+========================= */
+.viewerPanel{
+  margin-top:20px;
+  padding:12px;
+
+  background:#111c2e;
+  border:1px solid #4da6ff;
+
+  cursor:pointer;
+
+  transition:0.2s;
+
+  box-shadow:0 0 10px rgba(77,166,255,0.15);
+}
+
+.viewerPanel:hover{
+  background:#4da6ff;
+  color:#0c1424;
+
+  box-shadow:0 0 20px rgba(77,166,255,0.5);
+
+  transform:translateY(-2px);
+}
+
+.viewerTitle{
+  font-weight:bold;
+  letter-spacing:1px;
+  color:#9ffcff;
+}
+
+.viewerSub{
+  font-size:12px;
+  opacity:0.8;
+  margin-top:4px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="title"></div>
+<div id="choices"></div>
+
+<hr>
+
+<!-- =========================
+     VIEWER（端末UI化）
+========================= -->
+<div class="viewerPanel" onclick="openViewer()">
+  <div class="viewerTitle">TERMINAL LINK</div>
+  <div class="viewerSub">[ TRACE LOG VIEWER ]</div>
+</div>
+
+<button onclick="reset()">🔄 RESET</button>
+
+<script>
+
+/* =========================
+   現在ノード
+========================= */
+const CURRENT_ID="3"
+const GOAL_ID="29"
+
+/* =========================
+   ヒント
+========================= */
+const HINTS={
+  "12":"最初の文字は O",
+  "17":"中央は RI",
+  "22":"最後は GIN"
+}
+
+let pages={}
+
+/* =========================
+   データロード
+========================= */
+fetch("https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/nodes.json").then(r=>r.json()).then(d=>{
+  pages=d
+
+  let state=JSON.parse(localStorage.getItem("mazeState"))||{
+    current:"0",
+    visited:["0"]
+  }
+
+  state.current=CURRENT_ID
+
+  if(!state.visited.includes(CURRENT_ID)){
+    state.visited.push(CURRENT_ID)
+  }
+
+  localStorage.setItem("mazeState",JSON.stringify(state))
+
+  render()
+})
+
+/* =========================
+   描画
+========================= */
+function render(){
+
+  let state=JSON.parse(localStorage.getItem("mazeState"))
+  let visited=state.visited||[]
+
+  const page=pages[CURRENT_ID]
+  const hint=HINTS[CURRENT_ID]
+
+  document.getElementById("title").innerHTML=`
+    <h2>${CURRENT_ID} : ${page.title}</h2>
+    ${hint?`<div id="hint">🧩 ${hint}</div>`:""}
+  `
+
+  /* ゴール */
+  if(CURRENT_ID===GOAL_ID){
+    document.getElementById("choices").innerHTML=
+      "<h3 style='color:#4da6ff'>🎉 GOAL</h3>"
+    return
+  }
+
+  let html=""
+
+  page.next.forEach(n=>{
+
+    const nextId=String(n)
+
+    /* パスワードルート */
+    if(CURRENT_ID==="25" && nextId==="28"){
+      html+=`
+        <div class="passwordBox">
+          <div>🔐 AUTH REQUIRED</div>
+
+          <input id="pw" type="password" placeholder="password">
+
+          <button onclick="pass()">ENTER</button>
+        </div>
+      `
+      return
+    }
+
+    let title = visited.includes(nextId)
+      ? pages[nextId].title
+      : "？？？"
+
+    html+=`
+      <a href="https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/node_${nextId}"
+         target="mazeNode"
+         onclick="go('${nextId}')">
+        ▶ ${nextId} : ${title}
+      </a>
+    `
+  })
+
+  if(page.next.length===0){
+    html=`<b>⚠ DEAD END</b>`
+  }
+
+  document.getElementById("choices").innerHTML=html
+}
+
+/* =========================
+   進行更新
+========================= */
+function go(next){
+
+  const state=JSON.parse(localStorage.getItem("mazeState")||"{}")
+
+  state.current=next
+  state.visited=Array.from(new Set([...(state.visited||[]),next]))
+
+  localStorage.setItem("mazeState",JSON.stringify(state))
+}
+
+/* =========================
+   パスワード
+========================= */
+function pass(){
+
+  const a=document.getElementById("pw")?.value
+
+  if(a && a.toUpperCase()==="ORIGIN"){
+    window.open("https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/node_28","mazeNode")
+  }else{
+    alert("違います")
+  }
+}
+
+/* =========================
+   viewer（端末統一UI）
+========================= */
+function openViewer(){
+
+  const w=window.open("", "mazeViewer")
+
+  if(w && !w.closed){
+    w.location.href="https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/VIEWER"
+    w.focus()
+  }else{
+    window.open("https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/VIEWER","mazeViewer")
+  }
+}
+
+/* =========================
+   リセット
+========================= */
+function reset(){
+  if(confirm("リセットしますか？")){
+    localStorage.removeItem("mazeState")
+    location.href="https://fuen-dreamer.github.io/ARGtool/HintViewer/MAZE/START"
+  }
+}
+
+</script>
+
+</body>
+</html>
