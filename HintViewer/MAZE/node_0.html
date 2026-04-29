@@ -168,6 +168,85 @@ button:hover{
   opacity:0.8;
   margin-top:4px;
 }
+
+@media (max-width:768px){
+
+  /* =========================
+     全体余白調整
+  ========================= */
+  body{
+    margin:10px;
+  }
+
+  /* =========================
+     タイトル
+  ========================= */
+  #title h2{
+    font-size:16px;
+    line-height:1.4;
+  }
+
+  /* =========================
+     ヒント
+  ========================= */
+  #hint{
+    font-size:13px;
+    padding:8px;
+  }
+
+  /* =========================
+     選択肢（重要）
+  ========================= */
+  a{
+    font-size:17px;
+    padding:16px;
+    margin:10px 0;
+  }
+
+  a:hover{
+    transform:none; /* スマホでズレ防止 */
+  }
+
+  /* =========================
+     ボタン
+  ========================= */
+  button{
+    width:100%;
+    margin-top:8px;
+    font-size:15px;
+  }
+
+  /* =========================
+     パスワードUI
+  ========================= */
+  .passwordBox{
+    padding:10px;
+  }
+
+  .passwordBox input{
+    font-size:16px; /* iOSズーム防止 */
+    padding:10px;
+  }
+
+  .passwordBox button{
+    width:100%;
+  }
+
+  /* =========================
+     VIEWERボタン
+  ========================= */
+  .viewerPanel{
+    padding:14px;
+  }
+
+  .viewerTitle{
+    font-size:15px;
+  }
+
+  .viewerSub{
+    font-size:11px;
+  }
+}
 </style>
 </head>
 
