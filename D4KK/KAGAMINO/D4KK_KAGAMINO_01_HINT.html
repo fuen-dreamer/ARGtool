@@ -98,6 +98,33 @@ h1{font-size:20px;}
   line-height:1.4;
   word-break:break-word;
 }
+
+#guideBtn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  z-index:10000;
+
+  padding:10px 14px;
+  background:#333;
+  color:#fff;
+  text-decoration:none;
+  border-radius:8px;
+
+  font-size:13px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.3);
+
+  transition:0.2s;
+
+  opacity:0;
+  pointer-events:none;
+}
+
+#guideBtn.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
 </style>
 </head>
 
@@ -118,6 +145,8 @@ h1{font-size:20px;}
 <span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔑</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> ネタバレ（ワンクッションあり）　※ネタバレモードのみ解放
 </div>
 
+<a id="guideBtn" href="https://fuen-dreamer.github.io/ARGtool/HintViewer/HintViewerGuide" target="_blank">❓ 利用ガイド</a>
+
 <div id="levelPanel"></div>
 <div id="mermaid"></div>
 
@@ -129,7 +158,14 @@ h1{font-size:20px;}
 </div>
 
 <script>
-mermaid.initialize({startOnLoad:false,securityLevel:'loose'})
+mermaid.initialize({
+ startOnLoad:false,
+ flowchart:{
+  nodeSpacing:80,
+  rankSpacing:100,
+  curve:"linear"
+ }
+})
 
 // ===== 状態 =====
 let pages={}
@@ -209,6 +245,7 @@ function runBoot(done){
     }else{
       setTimeout(()=>{
         overlay.style.display="none"
+        document.getElementById("guideBtn").classList.add("show")
         isFirstRender=false
         done&&done()
       },300)
@@ -379,10 +416,83 @@ function render(){
     g+=`${p}["<div data-id='${p}'>${label}</div>"]\n`
   }
 
+  // ===== キーワードグループ化 =====
+  let keywordGroups={}
   for(let p in visible){
-    pages[p].next.forEach(n=>{
-      if(visible[n]) g+=`${p}-->${n}\n`
+    let kw=pages[p].keyword
+    if(!kw) continue
+    if(!keywordGroups[kw]) keywordGroups[kw]=[]
+    keywordGroups[kw].push(p)
+  }
+
+  // ===== クラスタ生成（2回以上のみ）=====
+  let keywordNodeMap={}
+  let kid=0
+
+  for(let kw in keywordGroups){
+
+    if(keywordGroups[kw].length < 2) continue
+
+    let nodes = keywordGroups[kw].filter(id=>visible[id])
+    if(nodes.length < 2) continue
+
+    let hubId="kw"+(kid++)
+    keywordNodeMap[kw]=hubId
+
+    // クラスタ化
+    g += `subgraph ${hubId} [" "]\n`
+
+    nodes.forEach(n=>{
+      g += `${n}\n`
     })
+
+    g += `end\n`
+  }
+
+  // ===== エッジ（クラスタ＋ラベル付き）=====
+  let edgeMap = {}
+
+  for(let p in visible){
+    let page = pages[p]
+
+    let fromHub = (page.keyword && keywordNodeMap[page.keyword])
+      ? keywordNodeMap[page.keyword]
+      : p
+
+    page.next.forEach(n=>{
+      if(!visible[n]) return
+
+      let toHub = (pages[n].keyword && keywordNodeMap[pages[n].keyword])
+        ? keywordNodeMap[pages[n].keyword]
+        : n
+
+      if(fromHub === toHub) return
+
+      let key = `${fromHub}-->${toHub}`
+
+      if(!edgeMap[key]){
+        edgeMap[key] = {
+          fromHub,
+          toHub,
+          nodes:new Set()
+        }
+      }
+
+      edgeMap[key].nodes.add(p)
+    })
+  }
+
+  // ===== 出力 =====
+  for(let key in edgeMap){
+
+    let {fromHub, toHub, nodes} = edgeMap[key]
+
+    if(fromHub.startsWith("kw")){
+      let label = [...nodes].sort((a,b)=>a-b).join(",")
+      g += `${fromHub}-->|${label}|${toHub}\n`
+    }else{
+      g += `${fromHub}-->${toHub}\n`
+    }
   }
 
   for(let p in visible){
