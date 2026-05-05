@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【非公式 ヒントビューア】ネトゲ異常案件</title>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+<style>
+body{font-family:sans-serif;margin:10px;font-size:14px;}
+h1{font-size:20px;}
+
+#levelPanel{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+
+.levelBtn{
+  padding:12px 16px;
+  cursor:pointer;
+  border:1px solid #ccc;
+  background:#eee;
+  border-radius:6px;
+}
+
+#mermaid{
+  border:1px solid #ccc;
+  padding:10px;
+  overflow:auto;
+  height:70vh;
+  position:relative;
+  scroll-behavior:smooth;
+}
+
+#mermaid svg{
+  transform-origin: 0 0;
+  transition: transform 0.2s ease;
+}
+
+#legend{margin-bottom:10px;font-size:14px;}
+
+.legendBox{
+  display:inline-block;
+  width:14px;height:14px;
+  margin-right:5px;
+  border:1px solid #888;
+}
+
+#modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;align-items:center;justify-content:center;
+}
+
+#modalContent{
+  background:white;padding:20px;
+  width:95%;max-width:400px;
+  border-radius:10px;
+}
+
+.hintBtn{
+  display:block;width:100%;
+  padding:14px;margin:8px 0;
+  border:none;cursor:pointer;
+  border-radius:6px;
+}
+
+.hintContent{
+  margin-top:5px;
+  padding:6px;
+  border-radius:6px;
+}
+
+.fakeText{line-height:1.6;letter-spacing:2px;color:#666;}
+.fakeLine{display:block;}
+
+.locked{filter: blur(6px);opacity:0.7;}
+
+/* ===== BOOT ===== */
+#introOverlay{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+
+  color:#00ffe5;
+
+  font-size:clamp(16px, 4vw, 28px);
+  letter-spacing:0.2em;
+
+  font-weight:bold;
+  text-shadow:0 0 10px #00ffe5,0 0 30px #00ffe5;
+
+  text-align:center;
+  padding:20px;
+  box-sizing:border-box;
+  line-height:1.4;
+  word-break:break-word;
+}
+
+#guideBtn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  z-index:10000;
+
+  padding:10px 14px;
+  background:#333;
+  color:#fff;
+  text-decoration:none;
+  border-radius:8px;
+
+  font-size:13px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.3);
+
+  transition:0.2s;
+
+  opacity:0;
+  pointer-events:none;
+}
+
+#guideBtn.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="introOverlay">BOOTING...<br>ネトゲ異常案件</div>
+
+<h1>【非公式 ヒントビューア】ネトゲ異常案件</h1>
+
+<div id="legend">
+<span class="legendBox" style="background:#c8f7c5"></span>1ワード　
+<span class="legendBox" style="background:#cce5ff"></span>2ワード　
+<span class="legendBox" style="background:#ffcccc"></span>アクセス制限
+<br>
+<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> 検索ヒントあり　
+<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> ひらめきヒントあり
+<br>
+<span class="legendBox" style="display: inline-block; width: 1.2em; height: 1.2em; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔑</text></svg>') no-repeat center; background-size: contain; vertical-align: middle;"></span> ネタバレ（ワンクッションあり）　※ネタバレモードのみ解放
+</div>
+
+<a id="guideBtn" href="https://fuen-dreamer.github.io/ARGtool/HintViewer/HintViewerGuide" target="_blank">❓ 利用ガイド</a>
+
+<div id="levelPanel"></div>
+<div id="mermaid"></div>
+
+<div id="modal">
+  <div id="modalContent">
+    <div id="modalBody"></div>
+    <button onclick="closeModal()">閉じる</button>
+  </div>
+</div>
+
+<script>
+mermaid.initialize({
+ startOnLoad:false,
+ flowchart:{
+  nodeSpacing:80,
+  rankSpacing:100,
+  curve:"linear"
+ }
+})
+
+// ===== 状態 =====
+let pages={}
+let lvLimit=0
+let hintEnabled=false
+let spoilerEnabled=false
+let currentOpenId=null
+let currentScale=1
+let lastFocusedId="0"
+let isFirstRender=true
+let isLevelChanged=false
+
+window.addEventListener("load", ()=>{
+  localStorage.removeItem("hintUnlock")
+})
+
+// ===== ズーム =====
+function applyZoom(){
+  const svg=document.querySelector("#mermaid svg")
+  if(!svg) return
+  svg.style.transform=`scale(${currentScale})`
+}
+
+function zoom(rate){
+  currentScale*=rate
+  currentScale=Math.min(10,Math.max(0.2,currentScale))
+  applyZoom()
+}
+
+function resetZoom(){
+  currentScale=1
+  applyZoom()
+}
+
+const mermaidDiv = document.getElementById("mermaid")
+
+// ===== スクロール =====
+mermaidDiv.addEventListener("scroll", ()=>{
+  localStorage.setItem("scrollX", mermaidDiv.scrollLeft)
+  localStorage.setItem("scrollY", mermaidDiv.scrollTop)
+})
+
+// ===== スクロール中心移動 =====
+function scrollToNode(id){
+  const node=mermaidDiv.querySelector(`[data-id='${id}']`)
+  if(!node) return
+
+  const rect=node.getBoundingClientRect()
+  const parentRect=mermaidDiv.getBoundingClientRect()
+
+  mermaidDiv.scrollLeft += rect.left - parentRect.left - mermaidDiv.clientWidth/2 + rect.width/2
+  mermaidDiv.scrollTop  += rect.top  - parentRect.top  - mermaidDiv.clientHeight/2 + rect.height/2
+}
+
+// ===== BOOT演出 =====
+function runBoot(done){
+
+  const overlay=document.getElementById("introOverlay")
+
+  currentScale=0.6
+  applyZoom()
+
+  let start=performance.now()
+  let duration=1000
+
+  function animate(now){
+    let t=Math.min(1,(now-start)/duration)
+    let ease=1-Math.pow(1-t,3)
+
+    currentScale=0.6+(1.0-0.6)*ease
+    applyZoom()
+
+    scrollToNode("0")
+
+    if(t<1){
+      requestAnimationFrame(animate)
+    }else{
+      setTimeout(()=>{
+        overlay.style.display="none"
+        document.getElementById("guideBtn").classList.add("show")
+        isFirstRender=false
+        done&&done()
+      },300)
+    }
+  }
+
+  requestAnimationFrame(animate)
+}
+
+// ===== ダミー =====
+function fakeText(lines=2){
+  let t=""
+  for(let i=0;i<lines;i++){
+    let len=8+Math.floor(Math.random()*10)
+    t+=`<span class="fakeLine">${"■".repeat(len)}</span>`
+  }
+  return `<div class="fakeText">${t}</div>`
+}
+
+function setColor(btn,on,color){
+  btn.style.background=on?color:"#eee"
+  btn.style.color=on?"#fff":"#000"
+}
+
+// ===== LVボタン =====
+let lvBtns=[]
+for(let i=0;i<=12;i++){
+  let b=document.createElement("button")
+
+  if(i===11){
+    b.innerText="🏁 ゴール"
+  }else if(i===12){
+    b.innerText="EX"
+  }else{
+    b.innerText="Lv"+i
+  }
+  b.className="levelBtn"
+
+  b.onclick=()=>{
+    lvLimit=i
+    isLevelChanged=true
+
+    lvBtns.forEach(x=>{x.style.background="#eee";x.style.color="#000"})
+    setColor(
+      b,
+      true,
+      i===11 ? "#f0ad4e" : i===12 ? "#9c27b0" : "#2196f3"
+    )
+
+    render()
+  }
+
+  if(i===0) setColor(b,true,"#2196f3")
+
+  lvBtns.push(b)
+  levelPanel.appendChild(b)
+}
+
+// ===== ヒント =====
+let hintBtn=document.createElement("button")
+hintBtn.className="levelBtn"
+hintBtn.innerText="🚫 ヒントOFF"
+hintBtn.onclick=()=>{
+  hintEnabled=!hintEnabled
+  hintBtn.innerText=hintEnabled?"💡 ヒントON":"🚫 ヒントOFF"
+  setColor(hintBtn,hintEnabled,"#4caf50")
+  render()
+}
+levelPanel.appendChild(hintBtn)
+
+// ===== ネタバレ =====
+let spoilerBtn=document.createElement("button")
+spoilerBtn.className="levelBtn"
+spoilerBtn.innerText="🚫 ネタバレOFF"
+spoilerBtn.onclick=()=>{
+  spoilerEnabled=!spoilerEnabled
+  spoilerBtn.innerText=spoilerEnabled?"🔑 ネタバレON":"🚫 ネタバレOFF"
+  setColor(spoilerBtn,spoilerEnabled,"#d9534f")
+  render()
+}
+levelPanel.appendChild(spoilerBtn)
+
+// ===== ズーム =====
+let zoomInBtn=document.createElement("button")
+zoomInBtn.className="levelBtn"
+zoomInBtn.innerText="＋"
+zoomInBtn.onclick=()=>zoom(1.2)
+levelPanel.appendChild(zoomInBtn)
+
+let zoomOutBtn=document.createElement("button")
+zoomOutBtn.className="levelBtn"
+zoomOutBtn.innerText="－"
+zoomOutBtn.onclick=()=>zoom(0.8)
+levelPanel.appendChild(zoomOutBtn)
+
+let resetBtn=document.createElement("button")
+resetBtn.className="levelBtn"
+resetBtn.innerText="リセット"
+resetBtn.onclick=()=>resetZoom()
+levelPanel.appendChild(resetBtn)
+
+// ===== JSON =====
+fetch("SIM3_ProjectSeries_002_HINT.json")
+.then(r=>r.json())
+.then(d=>{
+  pages=d
+  render()
+})
+
+// ===== 描画 =====
+function render(){
+
+  let unlocked=JSON.parse(localStorage.getItem("hintUnlock")||"{}")
+
+  let g=`flowchart TB\n`
+  let visible={},visited={}
+
+  // =========================
+  // 可視ノード
+  // =========================
+  for(let p in pages){
+    if(pages[p].lv<=lvLimit) visible[p]=1
+  }
+
+  function dfs(n){
+    if(!visible[n]||visited[n])return
+    visited[n]=1
+    pages[n].next.forEach(dfs)
+  }
+  if(visible["0"]) dfs("0")
+
+// =========================
+// group + keyword ネスト構造
+// =========================
+let groupNodeMap={}
+let keywordNodeMap={}
+let keywordMembers={}
+
+let gid=0
+let kid=0
+
+let groupMap={}
+
+for(let p in visible){
+  let gp=pages[p].group || "_nogroup"
+  if(!groupMap[gp]) groupMap[gp]=[]
+  groupMap[gp].push(p)
+}
+
+for(let gp in groupMap){
+
+  let nodes=groupMap[gp]
+
+  // ===== groupあり =====
+  if(gp!=="_nogroup" && nodes.length>=2){
+
+    let groupId="gp"+(gid++)
+    groupNodeMap[gp]=groupId
+
+    g+=`subgraph ${groupId} [" "]\n`
+
+    // keyword分解
+    let kwMap={}
+    nodes.forEach(n=>{
+      let kw=pages[n].keyword || "_nokey"
+      if(!kwMap[kw]) kwMap[kw]=[]
+      kwMap[kw].push(n)
+    })
+
+    for(let kw in kwMap){
+
+      let list=kwMap[kw]
+
+      if(list.length>=2 && kw!=="_nokey"){
+
+        let key=kw+"__"+gp
+        let kwId="kw"+(kid++)
+
+        keywordNodeMap[key]=kwId
+        keywordMembers[kwId]=list
+
+        g+=`subgraph ${kwId} [" "]\n`
+        list.forEach(n=> g+=`${n}\n`)
+        g+=`end\n`
+
+      }else{
+        list.forEach(n=> g+=`${n}\n`)
+      }
+    }
+
+    g+=`end\n`
+  }
+
+  // ===== groupなし =====
+  else{
+
+    let kwMap={}
+    nodes.forEach(n=>{
+      let kw=pages[n].keyword
+      if(!kw) return
+      if(!kwMap[kw]) kwMap[kw]=[]
+      kwMap[kw].push(n)
+    })
+
+    for(let kw in kwMap){
+
+      let list=kwMap[kw]
+      if(list.length<2) continue
+
+      let key=kw+"__nogroup"
+      let kwId="kw"+(kid++)
+
+      keywordNodeMap[key]=kwId
+      keywordMembers[kwId]=list
+
+      g+=`subgraph ${kwId} [" "]\n`
+      list.forEach(n=> g+=`${n}\n`)
+      g+=`end\n`
+    }
+  }
+}
+
+  // =========================
+  // keyword流入（クラスタ単位）
+  // =========================
+  let keywordInflowMap={}
+
+  for(let id in keywordMembers){
+    keywordInflowMap[id]=new Set()
+  }
+
+  for(let from in pages){
+    if(!visible[from]) continue
+
+    pages[from].next.forEach(to=>{
+      if(!visible[to]) return
+
+      for(let kwId in keywordMembers){
+        let members=keywordMembers[kwId]
+
+        if(members.includes(to) && !members.includes(from)){
+          keywordInflowMap[kwId].add(from)
+        }
+      }
+    })
+  }
+
+  // =========================
+  // ノード生成
+  // =========================
+  for(let p in visible){
+
+    let page=pages[p]
+    let isOpen=unlocked["k"+p]
+
+    let icons=""
+    if(page.lv===11) icons+=" 🏁"
+    if(page.lv===12) icons+=" EX"
+
+    if(hintEnabled){
+      if(page.search) icons+=" 🔍"
+      if(page.idea) icons+=" 💡"
+    }
+
+    if(spoilerEnabled){
+      if(page.keyword) icons+=" 🔑"
+      else if(page.lv!==0 && page.lv!==11) icons+=" 📄"
+    }
+
+    let titleLine=""
+    if(page.lv===0){
+      titleLine=(hintEnabled&&page.title)?`<br><b>${page.title}</b>`:""
+    }else{
+      titleLine=(!spoilerEnabled||!isOpen)?`<br><b>？？？</b>`:`<br><b>${page.title||""}</b>`
+    }
+
+    let keywordLine=""
+    if(spoilerEnabled&&page.keyword){
+      keywordLine=isOpen?`<br>🔑 ${page.keyword}`:`<br>🔑 ？？？`
+    }
+
+    let displayId=(p==="0")?"スタート":p
+    let lvText=(page.lv!==0 && page.lv!==11 && page.lv!==12)?`<br>Lv${page.lv}`:"\n"
+
+    let label=(p==="0")
+      ?`${displayId}<br>${icons}${titleLine}${keywordLine}`
+      :`${displayId}${titleLine}${lvText}${icons}${keywordLine}`
+
+    // keywordクラスタ流入ラベル
+    let gp=page.group || "_nogroup"
+    let key=page.keyword+"__"+gp
+    let kwId=keywordNodeMap[key]
+
+    if(kwId && keywordInflowMap[kwId].size>0){
+      let nums=[...keywordInflowMap[kwId]].sort((a,b)=>a-b)
+      label+=`<br><span style="font-size:10px;color:#888">← ${nums.join(",")}</span>`
+    }
+
+    g+=`${p}["<div data-id='${p}'>${label}</div>"]\n`
+  }
+
+  // =========================
+  // エッジ
+  // =========================
+  let edgeMap={}
+
+  for(let p in visible){
+
+    let page=pages[p]
+
+    let from =
+      (page.group && groupNodeMap[page.group]) ||
+      p
+
+    page.next.forEach(n=>{
+      if(!visible[n]) return
+
+      let gp=pages[n].group || "_nogroup"
+      let key=pages[n].keyword+"__"+gp
+
+      let to =
+        keywordNodeMap[key] ||
+        groupNodeMap[pages[n].group] ||
+        n
+
+      if(from===to) return
+
+      let k=`${from}-->${to}`
+
+      if(!edgeMap[k]){
+        edgeMap[k]={from,to,nodes:new Set()}
+      }
+
+      edgeMap[k].nodes.add(p)
+    })
+  }
+
+  for(let k in edgeMap){
+
+    let {from,to,nodes}=edgeMap[k]
+
+    // keyword内部の線を消す
+    if(keywordMembers[to]){
+      let members=keywordMembers[to]
+      let skip=false
+
+      for(let n of nodes){
+        if(members.includes(n)){
+          skip=true
+          break
+        }
+      }
+
+      if(skip) continue
+    }
+
+    let isCluster =
+      typeof from==="string" && (from.startsWith("gp")||from.startsWith("kw")) ||
+      typeof to==="string" && to.startsWith("kw")
+
+    if(isCluster){
+      let label=[...nodes].sort((a,b)=>a-b).join(",")
+      g+=`${from}-->|${label}|${to}\n`
+    }else{
+      g+=`${from}-->${to}\n`
+    }
+  }
+
+  // =========================
+  // スタイル
+  // =========================
+  for(let p in visible){
+
+    let page=pages[p]
+
+    if(page.lv===11){
+      g+=`style ${p} fill:#f0ad4e\n`
+      continue
+    }
+
+    if(page.lv===12){
+      g+=`style ${p} fill:#e1bee7\n`
+      continue
+    }
+
+    if(!visited[p]){
+      g+=`style ${p} fill:#ffcccc\n`
+      continue
+    }
+
+    if(!hintEnabled) continue
+
+    if(page.keywordWords===1){
+      g+=`style ${p} fill:#c8f7c5\n`
+    }else if(page.keywordWords===2){
+      g+=`style ${p} fill:#cce5ff\n`
+    }else if(page.keywordWords===-1){
+      g+=`style ${p} fill:#ffcccc\n`
+    }
+  }
+
+  mermaid.render("graph"+Date.now(),g).then(res=>{
+    mermaidDiv.innerHTML=res.svg
+    applyZoom()
+    bind()
+
+    setTimeout(()=>{
+      if(isFirstRender){
+        runBoot(()=>scrollToNode("0"))
+        return
+      }
+
+      const x=parseFloat(localStorage.getItem("scrollX")||0)
+      const y=parseFloat(localStorage.getItem("scrollY")||0)
+
+      if(isLevelChanged){
+        let target=lastFocusedId
+        if(!mermaidDiv.querySelector(`[data-id='${target}']`)) target="0"
+        scrollToNode(target)
+        isLevelChanged=false
+      }
+      else if(localStorage.getItem("scrollX")!==null){
+        mermaidDiv.scrollLeft=x
+        mermaidDiv.scrollTop=y
+      }
+      else{
+        scrollToNode("0")
+      }
+    },80)
+  })
+}
+
+// ===== bind =====
+function bind(){
+  mermaidDiv.querySelectorAll("g.node").forEach(node=>{
+    node.style.cursor="pointer"
+
+    node.onclick=(e)=>{
+      e.stopPropagation()
+      let id=node.querySelector("[data-id]")?.getAttribute("data-id")
+      if(!id) return
+
+      lastFocusedId=id
+      scrollToNode(id)
+      currentOpenId===id?closeModal():showHint(id)
+    }
+  })
+}
+
+// ===== unlock / modal =====
+function unlock(type,id){
+  let u=JSON.parse(localStorage.getItem("hintUnlock")||"{}")
+  u[type+id]=!u[type+id]
+  localStorage.setItem("hintUnlock",JSON.stringify(u))
+
+  lastFocusedId=String(id)
+  render()
+
+  setTimeout(()=>showHint(id),50)
+}
+
+// ===== ヒント =====
+function showHint(id){
+  let p=pages[id]
+  let unlocked=JSON.parse(localStorage.getItem("hintUnlock")||"{}")
+
+  let html=`<b>ページ ${id}</b>`
+
+  let isOpen=unlocked["k"+id]
+
+  let showTitle=(p.lv===0)?hintEnabled:(spoilerEnabled&&isOpen)
+
+  html+=`<br><span style="color:#666">${showTitle?p.title||"":"？？？"}</span><br><br>`
+
+  if(hintEnabled&&p.search){
+    let open=unlocked["s"+id]
+    html+=`<button class="hintBtn" onclick="unlock('s',${id})">${open?"🔒隠す":"🔍検索ヒント"}</button>
+    <div class="hintContent ${open?"":"locked"}">${open?p.search:fakeText(2)}</div>`
+  }
+
+  if(hintEnabled&&p.idea){
+    let open=unlocked["i"+id]
+    html+=`<button class="hintBtn" onclick="unlock('i',${id})">${open?"🔒隠す":"💡ひらめきヒント"}</button>
+    <div class="hintContent ${open?"":"locked"}">${open?p.idea:fakeText(2)}</div>`
+  }
+
+  if(spoilerEnabled&&(p.lv!==0||p.keyword)){
+    let open=isOpen
+
+    html+=`<button class="hintBtn" onclick="unlock('k',${id})">${open?"🔒隠す":"🔑 ネタバレ"}</button>
+    <div class="hintContent ${open?"":"locked"}">`
+
+    if(open){
+      html+=p.keyword||""
+    }else{
+      html+=fakeText(1)
+    }
+
+    html+=`</div>`
+  }
+
+  modalBody.innerHTML=html
+  modal.style.display="flex"
+  currentOpenId=id
+}
+
+function closeModal(){
+  modal.style.display="none"
+  currentOpenId=null
+}
+</script>
+
+</body>
+</html>
