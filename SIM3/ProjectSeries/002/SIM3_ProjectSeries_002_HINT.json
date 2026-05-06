@@ -104,7 +104,7 @@
 "102":{"lv":6,"title":"引継ぎ事項","group":"個人フォルダ：東雲しのぶ","next":[],"keyword":"","search":"","idea":"","keywordWords":0,"url":""},
 "103":{"lv":6,"title":"復元データ：個人フォルダ：馬場ファルコ","group":"復元データ：個人フォルダ：馬場ファルコ","next":[101],"keyword":"<br>フォルダID：00050<br>削除ユーザーID：BANDIT053","search":"","idea":"","keywordWords":2,"url":""},
 "104":{"lv":6,"title":"newfireceremony.log","group":"","next":[108,109],"keyword":"NewFireCeremony","search":"","idea":"ログの▒で化けてる箇所ってそれぞれ違ってるっぽくないですか？","keywordWords":1,"url":""},
-"105":{"lv":7,"title":"身辺調査報告書（士道光）","group":"","next":[110,113],"keyword":"士道光","search":"","idea":"よく分からない言語。デルタの誰かのチャットで解析について話してませんでしたか？<br>Googleで翻訳してみると意味深なワードが。手がかりにどっかの資料で探す？そんな資料前に見たような。","keywordWords":1,"url":""},
+"105":{"lv":7,"title":"身辺調査報告書（士道光）","group":"","next":[110,113],"keyword":"士道光","search":"氏名","idea":"よく分からない言語。デルタの誰かのチャットで解析について話してませんでしたか？<br>Googleで翻訳してみると意味深なワードが。手がかりにどっかの資料で探す？そんな資料前に見たような。","keywordWords":1,"url":""},
 "106":{"lv":7,"title":"Calendario Azteca","group":"個人フォルダ：馬場ファルコ","next":[107],"keyword":"","search":"","idea":"","keywordWords":0,"url":""},
 "107":{"lv":7,"title":"テスト用プログラム","group":"","next":[108],"keyword":"CalendarioAzteca","search":"","idea":"","keywordWords":1,"url":""},
 "108":{"lv":8,"title":"プログラム実行ツール","group":"","next":[109,119,120],"keyword":"牡牛の祭壇 太陽の石","search":"","idea":"石と祭壇の２つが重要そうですね。正式な名前で一緒に調べたい。","keywordWords":2,"url":""},
