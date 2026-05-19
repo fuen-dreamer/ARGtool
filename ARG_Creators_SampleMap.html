@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ARG Creators Map</title>
+
+<script src="https://unpkg.com/@panzoom/panzoom/dist/panzoom.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:sans-serif;
+    background:#f5f5f5;
+    color:#222;
+    overflow:hidden;
+}
+
+.container{
+    display:flex;
+    width:100vw;
+    height:100vh;
+}
+
+/* =========================
+   マップエリア
+========================= */
+
+.map-area{
+    flex:1;
+    position:relative;
+    overflow:hidden;
+    background:#f5f5f5;
+}
+
+.chart-wrapper{
+    width:100%;
+    height:100%;
+    position:relative;
+    overflow:hidden;
+    touch-action:none;
+}
+
+.chart{
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:1800px;
+    height:1800px;
+
+    z-index:1;
+
+    background:
+        /* 縦中央線 */
+        linear-gradient(
+            to right,
+            transparent 49.9%,
+            #888 49.9%,
+            #888 50.1%,
+            transparent 50.1%
+        ),
+
+        /* 横中央線 */
+        linear-gradient(
+            to bottom,
+            transparent 49.9%,
+            #888 49.9%,
+            #888 50.1%,
+            transparent 50.1%
+        ),
+
+        /* 縦グリッド */
+        linear-gradient(
+            to right,
+            rgba(0,0,0,0.06) 1px,
+            transparent 1px
+        ),
+
+        /* 横グリッド */
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.06) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        100% 100%,
+        100% 100%,
+        10% 10%,
+        10% 10%;
+
+    border:2px solid #999;
+
+    background-color:white;
+}
+
+/* =========================
+   軸ラベル
+========================= */
+
+.axis-label{
+    position:absolute;
+
+    z-index:9999;
+
+    font-size:18px;
+    color:#333;
+
+    font-weight:bold;
+
+    pointer-events:none;
+
+    background:#f5f5f5;
+
+    padding:4px 10px;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 1px 4px rgba(0,0,0,0.08);
+}
+
+.top-label{
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#1d4ed8;
+}
+
+.bottom-label{
+    bottom:10px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#16a34a;
+}
+
+.left-label{
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#ea580c;
+}
+
+.right-label{
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#7c3aed;
+}
+
+/* =========================
+   ノード
+========================= */
+
+.creator-node{
+    position:absolute;
+
+    transform:translate(-50%, -50%);
+
+    background:white;
+
+    border:1px solid #666;
+
+    border-radius:8px;
+
+    padding:5px 9px;
+
+    font-size:12px;
+
+    white-space:nowrap;
+
+    cursor:pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.15s;
+
+    user-select:none;
+
+    box-shadow:
+        0 1px 3px rgba(0,0,0,0.15);
+}
+
+.creator-node:hover{
+
+    background:#efefef;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.15);
+
+    z-index:1000;
+}
+
+/* =========================
+   点表示モード
+========================= */
+
+.creator-node.compact{
+
+    width:12px;
+    height:12px;
+
+    padding:0;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    color:transparent;
+
+    background:#444;
+}
+
+/* =========================
+   詳細パネル
+========================= */
+
+.detail-panel{
+
+    width:320px;
+
+    background:white;
+
+    border-left:1px solid #ccc;
+
+    padding:20px;
+
+    overflow-y:auto;
+}
+
+.detail-panel h2{
+    margin-top:0;
+    font-size:22px;
+}
+
+.detail-item{
+    margin-bottom:20px;
+    line-height:1.6;
+}
+
+.detail-item a{
+    color:#0066cc;
+    text-decoration:none;
+    word-break:break-all;
+}
+
+.detail-item a:hover{
+    text-decoration:underline;
+}
+
+.placeholder{
+    color:#888;
+    margin-top:40px;
+}
+
+/* =========================
+   ズーム表示
+========================= */
+
+.zoom-info{
+
+    position:absolute;
+
+    left:15px;
+    bottom:15px;
+
+    background:rgba(255,255,255,0.95);
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    padding:8px 12px;
+
+    font-size:14px;
+
+    z-index:9999;
+}
+
+/* =========================
+   スマホ対応
+========================= */
+
+@media(max-width:900px){
+
+    .container{
+        flex-direction:column;
+    }
+
+    .detail-panel{
+        width:100%;
+        height:240px;
+
+        border-left:none;
+        border-top:1px solid #ccc;
+    }
+
+    .axis-label{
+        font-size:14px;
+    }
+
+    .creator-node{
+        font-size:11px;
+        padding:4px 7px;
+    }
+
+    .zoom-info{
+        font-size:12px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="map-area">
+
+        <div class="axis-label top-label">
+            ロング
+        </div>
+
+        <div class="axis-label bottom-label">
+            ショート
+        </div>
+
+        <div class="axis-label left-label">
+            ユーモア
+        </div>
+
+        <div class="axis-label right-label">
+            シリアス
+        </div>
+
+        <div class="zoom-info" id="zoomInfo">
+            Zoom: 100%
+        </div>
+
+        <div class="chart-wrapper">
+
+            <div class="chart" id="chart"></div>
+
+        </div>
+
+    </div>
+
+    <div class="detail-panel">
+
+        <h2>制作者情報</h2>
+
+        <div id="detail-content">
+
+            <div class="placeholder">
+                制作者をタップすると、
+                詳細情報が表示されます。
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let currentScale = 1;
+
+/* =========================
+   JSON読み込み
+========================= */
+
+async function loadData(){
+
+    const response =
+        await fetch("ARG_Creators_SampleData.json");
+
+    const creators =
+        await response.json();
+
+    renderCreators(creators);
+}
+
+/* =========================
+   描画
+========================= */
+
+function renderCreators(creators){
+
+    const chart =
+        document.getElementById("chart");
+
+    const groups = {};
+
+    creators.forEach(creator => {
+
+        const key =
+            `${creator.serious}-${creator.length}`;
+
+        if(!groups[key]){
+            groups[key] = [];
+        }
+
+        groups[key].push(creator);
+    });
+
+    Object.values(groups).forEach(group => {
+
+        const count = group.length;
+
+        group.forEach((creator, index) => {
+
+            const node =
+                document.createElement("div");
+
+            node.className =
+                "creator-node";
+
+            node.textContent =
+                creator.name;
+
+            const baseX =
+                (creator.serious / 10) * 100;
+
+            const baseY =
+                100 -
+                ((creator.length / 10) * 100);
+
+            let offsetX = 0;
+            let offsetY = 0;
+
+            if(count > 1){
+
+                const angle =
+                    (Math.PI * 2 / count) * index;
+
+                const radius =
+                    28 + (count * 2);
+
+                offsetX =
+                    Math.cos(angle) * radius;
+
+                offsetY =
+                    Math.sin(angle) * radius;
+            }
+
+            node.style.left =
+                `calc(${baseX}% + ${offsetX}px)`;
+
+            node.style.top =
+                `calc(${baseY}% + ${offsetY}px)`;
+
+            node.addEventListener("click", () => {
+
+                showDetail(creator);
+
+            });
+
+            chart.appendChild(node);
+        });
+    });
+
+    updateNodeMode();
+}
+
+/* =========================
+   詳細表示
+========================= */
+
+function showDetail(creator){
+
+    const detail =
+        document.getElementById("detail-content");
+
+    detail.innerHTML = `
+
+        <div class="detail-item">
+            <strong>制作者名</strong><br>
+            ${creator.name}
+        </div>
+
+        <div class="detail-item">
+            <strong>プロフィール</strong><br>
+            <a href="${creator.creatorUrl}"
+               target="_blank">
+               ${creator.creatorUrl}
+            </a>
+        </div>
+
+        <div class="detail-item">
+            <strong>代表作</strong><br>
+            ${creator.work}
+        </div>
+
+        <div class="detail-item">
+            <strong>作品ページ</strong><br>
+            <a href="${creator.workUrl}"
+               target="_blank">
+               ${creator.workUrl}
+            </a>
+        </div>
+
+        <div class="detail-item">
+            <strong>物語の長さ</strong><br>
+            ${creator.length} / 10
+            （${creator.length >= 5 ? "ロング寄り" : "ショート寄り"}）
+        </div>
+
+        <div class="detail-item">
+            <strong>作風</strong><br>
+            ${creator.serious} / 10
+            （${creator.serious >= 5 ? "シリアス寄り" : "ユーモア寄り"}）
+        </div>
+
+    `;
+}
+
+/* =========================
+   点表示切替
+========================= */
+
+function updateNodeMode(){
+
+    const nodes =
+        document.querySelectorAll(".creator-node");
+
+    nodes.forEach(node => {
+
+        if(currentScale < 0.45){
+
+            node.classList.add("compact");
+
+        }else{
+
+            node.classList.remove("compact");
+        }
+    });
+
+    document.getElementById("zoomInfo")
+        .textContent =
+        `Zoom: ${Math.round(currentScale * 100)}%`;
+}
+
+/* =========================
+   初期位置計算
+========================= */
+
+const initialScale = 0.5;
+
+// PC時の右パネル幅
+const panelWidth =
+    window.innerWidth > 900 ? 320 : 0;
+
+// スマホ時の下パネル高さ
+const panelHeight =
+    window.innerWidth <= 900 ? 240 : 0;
+
+// 表示領域のサイズ
+const visibleWidth =
+    window.innerWidth - panelWidth;
+
+const visibleHeight =
+    window.innerHeight - panelHeight;
+
+// chartサイズ
+const chartSize = 1800;
+
+// 詳細パネルの存在を考慮し、マップ表示エリアの真ん中に十字を合わせる計算
+const startX = (visibleWidth / 2) - (chartSize / 2) - 240;
+const startY = (visibleHeight / 2) - (chartSize / 2) - 360;
+
+/* =========================
+   Panzoom
+========================= */
+
+const chart =
+    document.getElementById("chart");
+
+const panzoom =
+    Panzoom(chart, {
+
+        maxScale:5,
+        minScale:0.08,
+
+        origin: '50% 50%',
+
+        startScale: initialScale,
+        startX: startX,
+        startY: startY
+    });
+
+document
+    .querySelector(".chart-wrapper")
+    .addEventListener(
+        "wheel",
+        panzoom.zoomWithWheel
+    );
+
+chart.addEventListener(
+    "panzoomchange",
+    (e) => {
+
+        currentScale =
+            e.detail.scale;
+
+        updateNodeMode();
+    }
+);
+
+currentScale = initialScale;
+
+updateNodeMode();
+
+/* =========================
+   データ読み込み
+========================= */
+
+loadData();
+
+</script>
+
+</body>
+</html>
