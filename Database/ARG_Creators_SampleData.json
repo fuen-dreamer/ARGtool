@@ -228,32 +228,32 @@
     "creatorUrl": "https://example.com/creator29",
     "work": "仮想都市",
     "workUrl": "https://example.com/work29",
-    "length": 9,
-    "serious": 6
+    "length": 6,
+    "serious": 4
   },
   {
     "name": "制作者30",
     "creatorUrl": "https://example.com/creator30",
     "work": "無人駅の声",
     "workUrl": "https://example.com/work30",
-    "length": 5,
-    "serious": 8
+    "length": 6,
+    "serious": 4
   },
   {
     "name": "制作者31",
     "creatorUrl": "https://example.com/creator31",
     "work": "深夜2時の放送",
     "workUrl": "https://example.com/work31",
-    "length": 7,
-    "serious": 9
+    "length": 6,
+    "serious": 4
   },
   {
     "name": "制作者32",
     "creatorUrl": "https://example.com/creator32",
     "work": "おもしろ研究会",
     "workUrl": "https://example.com/work32",
-    "length": 3,
-    "serious": 2
+    "length": 6,
+    "serious": 4
   },
   {
     "name": "制作者33",
@@ -261,7 +261,7 @@
     "work": "未確認ラジオ",
     "workUrl": "https://example.com/work33",
     "length": 6,
-    "serious": 7
+    "serious": 4
   },
   {
     "name": "制作者34",
@@ -269,22 +269,22 @@
     "work": "星屑ホテル",
     "workUrl": "https://example.com/work34",
     "length": 5,
-    "serious": 5
+    "serious": 4
   },
   {
     "name": "制作者35",
     "creatorUrl": "https://example.com/creator35",
     "work": "監視区域",
     "workUrl": "https://example.com/work35",
-    "length": 9,
-    "serious": 10
+    "length": 5,
+    "serious": 4
   },
   {
     "name": "制作者36",
     "creatorUrl": "https://example.com/creator36",
     "work": "変身アプリ",
     "workUrl": "https://example.com/work36",
-    "length": 4,
+    "length": 5,
     "serious": 4
   },
   {
@@ -293,55 +293,55 @@
     "work": "奇妙な宅配便",
     "workUrl": "https://example.com/work37",
     "length": 5,
-    "serious": 6
+    "serious": 4
   },
   {
     "name": "制作者38",
     "creatorUrl": "https://example.com/creator38",
     "work": "廃病院記録",
     "workUrl": "https://example.com/work38",
-    "length": 8,
-    "serious": 9
+    "length": 5,
+    "serious": 4
   },
   {
     "name": "制作者39",
     "creatorUrl": "https://example.com/creator39",
     "work": "宇宙猫チャンネル",
     "workUrl": "https://example.com/work39",
-    "length": 2,
-    "serious": 1
+    "length": 5,
+    "serious": 4
   },
   {
     "name": "制作者40",
     "creatorUrl": "https://example.com/creator40",
     "work": "深層アーカイブ",
     "workUrl": "https://example.com/work40",
-    "length": 10,
-    "serious": 9
+    "length": 5,
+    "serious": 4
   },
   {
     "name": "制作者41",
     "creatorUrl": "https://example.com/creator41",
     "work": "夢追い研究所",
     "workUrl": "https://example.com/work41",
-    "length": 6,
-    "serious": 5
+    "length": 5,
+    "serious": 4
   },
   {
     "name": "制作者42",
     "creatorUrl": "https://example.com/creator42",
     "work": "ノイズ配信",
     "workUrl": "https://example.com/work42",
-    "length": 7,
-    "serious": 8
+    "length": 5,
+    "serious": 4
   },
   {
     "name": "制作者43",
     "creatorUrl": "https://example.com/creator43",
     "work": "超常料理番組",
     "workUrl": "https://example.com/work43",
-    "length": 3,
-    "serious": 2
+    "length": 5,
+    "serious": 4
   },
   {
     "name": "制作者44",
@@ -349,7 +349,7 @@
     "work": "黒い手紙",
     "workUrl": "https://example.com/work44",
     "length": 5,
-    "serious": 8
+    "serious": 4
   },
   {
     "name": "制作者45",
