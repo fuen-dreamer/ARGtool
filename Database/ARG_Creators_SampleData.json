@@ -1,0 +1,402 @@
+[
+  {
+    "name": "制作者01",
+    "creatorUrl": "https://example.com/creator01",
+    "work": "かがみの特殊少年更生施設",
+    "workUrl": "https://example.com/work01",
+    "length": 9,
+    "serious": 9
+  },
+  {
+    "name": "制作者02",
+    "creatorUrl": "https://example.com/creator02",
+    "work": "Vtuber失踪案件",
+    "workUrl": "https://example.com/work02",
+    "length": 8,
+    "serious": 7
+  },
+  {
+    "name": "制作者03",
+    "creatorUrl": "https://example.com/creator03",
+    "work": "深夜の観測記録",
+    "workUrl": "https://example.com/work03",
+    "length": 6,
+    "serious": 8
+  },
+  {
+    "name": "制作者04",
+    "creatorUrl": "https://example.com/creator04",
+    "work": "リアル脱出ゲーム",
+    "workUrl": "https://example.com/work04",
+    "length": 7,
+    "serious": 5
+  },
+  {
+    "name": "制作者05",
+    "creatorUrl": "https://example.com/creator05",
+    "work": "6417",
+    "workUrl": "https://example.com/work05",
+    "length": 5,
+    "serious": 6
+  },
+  {
+    "name": "制作者06",
+    "creatorUrl": "https://example.com/creator06",
+    "work": "消えた放送室",
+    "workUrl": "https://example.com/work06",
+    "length": 4,
+    "serious": 7
+  },
+  {
+    "name": "制作者07",
+    "creatorUrl": "https://example.com/creator07",
+    "work": "404の少女",
+    "workUrl": "https://example.com/work07",
+    "length": 3,
+    "serious": 8
+  },
+  {
+    "name": "制作者08",
+    "creatorUrl": "https://example.com/creator08",
+    "work": "おばけ配信",
+    "workUrl": "https://example.com/work08",
+    "length": 2,
+    "serious": 3
+  },
+  {
+    "name": "制作者09",
+    "creatorUrl": "https://example.com/creator09",
+    "work": "深海ログ",
+    "workUrl": "https://example.com/work09",
+    "length": 8,
+    "serious": 9
+  },
+  {
+    "name": "制作者10",
+    "creatorUrl": "https://example.com/creator10",
+    "work": "謎の郵便物",
+    "workUrl": "https://example.com/work10",
+    "length": 5,
+    "serious": 6
+  },
+  {
+    "name": "制作者11",
+    "creatorUrl": "https://example.com/creator11",
+    "work": "夜道探索録",
+    "workUrl": "https://example.com/work11",
+    "length": 6,
+    "serious": 8
+  },
+  {
+    "name": "制作者12",
+    "creatorUrl": "https://example.com/creator12",
+    "work": "変な広告",
+    "workUrl": "https://example.com/work12",
+    "length": 2,
+    "serious": 2
+  },
+  {
+    "name": "制作者13",
+    "creatorUrl": "https://example.com/creator13",
+    "work": "地下施設観測記録",
+    "workUrl": "https://example.com/work13",
+    "length": 10,
+    "serious": 10
+  },
+  {
+    "name": "制作者14",
+    "creatorUrl": "https://example.com/creator14",
+    "work": "ねこ探し",
+    "workUrl": "https://example.com/work14",
+    "length": 1,
+    "serious": 1
+  },
+  {
+    "name": "制作者15",
+    "creatorUrl": "https://example.com/creator15",
+    "work": "記録映像A",
+    "workUrl": "https://example.com/work15",
+    "length": 7,
+    "serious": 9
+  },
+  {
+    "name": "制作者16",
+    "creatorUrl": "https://example.com/creator16",
+    "work": "学校の噂",
+    "workUrl": "https://example.com/work16",
+    "length": 5,
+    "serious": 7
+  },
+  {
+    "name": "制作者17",
+    "creatorUrl": "https://example.com/creator17",
+    "work": "夢の入口",
+    "workUrl": "https://example.com/work17",
+    "length": 4,
+    "serious": 5
+  },
+  {
+    "name": "制作者18",
+    "creatorUrl": "https://example.com/creator18",
+    "work": "壊れた配信",
+    "workUrl": "https://example.com/work18",
+    "length": 8,
+    "serious": 8
+  },
+  {
+    "name": "制作者19",
+    "creatorUrl": "https://example.com/creator19",
+    "work": "宇宙電波",
+    "workUrl": "https://example.com/work19",
+    "length": 6,
+    "serious": 4
+  },
+  {
+    "name": "制作者20",
+    "creatorUrl": "https://example.com/creator20",
+    "work": "怪異スタンプラリー",
+    "workUrl": "https://example.com/work20",
+    "length": 3,
+    "serious": 3
+  },
+  {
+    "name": "制作者21",
+    "creatorUrl": "https://example.com/creator21",
+    "work": "黒いサイト",
+    "workUrl": "https://example.com/work21",
+    "length": 9,
+    "serious": 10
+  },
+  {
+    "name": "制作者22",
+    "creatorUrl": "https://example.com/creator22",
+    "work": "白昼夢",
+    "workUrl": "https://example.com/work22",
+    "length": 4,
+    "serious": 5
+  },
+  {
+    "name": "制作者23",
+    "creatorUrl": "https://example.com/creator23",
+    "work": "迷子センター",
+    "workUrl": "https://example.com/work23",
+    "length": 5,
+    "serious": 6
+  },
+  {
+    "name": "制作者24",
+    "creatorUrl": "https://example.com/creator24",
+    "work": "異常掲示板",
+    "workUrl": "https://example.com/work24",
+    "length": 7,
+    "serious": 8
+  },
+  {
+    "name": "制作者25",
+    "creatorUrl": "https://example.com/creator25",
+    "work": "ネコ型生命体",
+    "workUrl": "https://example.com/work25",
+    "length": 2,
+    "serious": 1
+  },
+  {
+    "name": "制作者26",
+    "creatorUrl": "https://example.com/creator26",
+    "work": "月面観測ログ",
+    "workUrl": "https://example.com/work26",
+    "length": 8,
+    "serious": 9
+  },
+  {
+    "name": "制作者27",
+    "creatorUrl": "https://example.com/creator27",
+    "work": "終末天気予報",
+    "workUrl": "https://example.com/work27",
+    "length": 6,
+    "serious": 7
+  },
+  {
+    "name": "制作者28",
+    "creatorUrl": "https://example.com/creator28",
+    "work": "お料理怪談",
+    "workUrl": "https://example.com/work28",
+    "length": 2,
+    "serious": 2
+  },
+  {
+    "name": "制作者29",
+    "creatorUrl": "https://example.com/creator29",
+    "work": "仮想都市",
+    "workUrl": "https://example.com/work29",
+    "length": 9,
+    "serious": 6
+  },
+  {
+    "name": "制作者30",
+    "creatorUrl": "https://example.com/creator30",
+    "work": "無人駅の声",
+    "workUrl": "https://example.com/work30",
+    "length": 5,
+    "serious": 8
+  },
+  {
+    "name": "制作者31",
+    "creatorUrl": "https://example.com/creator31",
+    "work": "深夜2時の放送",
+    "workUrl": "https://example.com/work31",
+    "length": 7,
+    "serious": 9
+  },
+  {
+    "name": "制作者32",
+    "creatorUrl": "https://example.com/creator32",
+    "work": "おもしろ研究会",
+    "workUrl": "https://example.com/work32",
+    "length": 3,
+    "serious": 2
+  },
+  {
+    "name": "制作者33",
+    "creatorUrl": "https://example.com/creator33",
+    "work": "未確認ラジオ",
+    "workUrl": "https://example.com/work33",
+    "length": 6,
+    "serious": 7
+  },
+  {
+    "name": "制作者34",
+    "creatorUrl": "https://example.com/creator34",
+    "work": "星屑ホテル",
+    "workUrl": "https://example.com/work34",
+    "length": 5,
+    "serious": 5
+  },
+  {
+    "name": "制作者35",
+    "creatorUrl": "https://example.com/creator35",
+    "work": "監視区域",
+    "workUrl": "https://example.com/work35",
+    "length": 9,
+    "serious": 10
+  },
+  {
+    "name": "制作者36",
+    "creatorUrl": "https://example.com/creator36",
+    "work": "変身アプリ",
+    "workUrl": "https://example.com/work36",
+    "length": 4,
+    "serious": 4
+  },
+  {
+    "name": "制作者37",
+    "creatorUrl": "https://example.com/creator37",
+    "work": "奇妙な宅配便",
+    "workUrl": "https://example.com/work37",
+    "length": 5,
+    "serious": 6
+  },
+  {
+    "name": "制作者38",
+    "creatorUrl": "https://example.com/creator38",
+    "work": "廃病院記録",
+    "workUrl": "https://example.com/work38",
+    "length": 8,
+    "serious": 9
+  },
+  {
+    "name": "制作者39",
+    "creatorUrl": "https://example.com/creator39",
+    "work": "宇宙猫チャンネル",
+    "workUrl": "https://example.com/work39",
+    "length": 2,
+    "serious": 1
+  },
+  {
+    "name": "制作者40",
+    "creatorUrl": "https://example.com/creator40",
+    "work": "深層アーカイブ",
+    "workUrl": "https://example.com/work40",
+    "length": 10,
+    "serious": 9
+  },
+  {
+    "name": "制作者41",
+    "creatorUrl": "https://example.com/creator41",
+    "work": "夢追い研究所",
+    "workUrl": "https://example.com/work41",
+    "length": 6,
+    "serious": 5
+  },
+  {
+    "name": "制作者42",
+    "creatorUrl": "https://example.com/creator42",
+    "work": "ノイズ配信",
+    "workUrl": "https://example.com/work42",
+    "length": 7,
+    "serious": 8
+  },
+  {
+    "name": "制作者43",
+    "creatorUrl": "https://example.com/creator43",
+    "work": "超常料理番組",
+    "workUrl": "https://example.com/work43",
+    "length": 3,
+    "serious": 2
+  },
+  {
+    "name": "制作者44",
+    "creatorUrl": "https://example.com/creator44",
+    "work": "黒い手紙",
+    "workUrl": "https://example.com/work44",
+    "length": 5,
+    "serious": 8
+  },
+  {
+    "name": "制作者45",
+    "creatorUrl": "https://example.com/creator45",
+    "work": "地下鉄0番線",
+    "workUrl": "https://example.com/work45",
+    "length": 8,
+    "serious": 9
+  },
+  {
+    "name": "制作者46",
+    "creatorUrl": "https://example.com/creator46",
+    "work": "怪談お笑い劇場",
+    "workUrl": "https://example.com/work46",
+    "length": 2,
+    "serious": 3
+  },
+  {
+    "name": "制作者47",
+    "creatorUrl": "https://example.com/creator47",
+    "work": "世界改変ログ",
+    "workUrl": "https://example.com/work47",
+    "length": 10,
+    "serious": 10
+  },
+  {
+    "name": "制作者48",
+    "creatorUrl": "https://example.com/creator48",
+    "work": "夜間通話",
+    "workUrl": "https://example.com/work48",
+    "length": 4,
+    "serious": 7
+  },
+  {
+    "name": "制作者49",
+    "creatorUrl": "https://example.com/creator49",
+    "work": "異世界掲示板",
+    "workUrl": "https://example.com/work49",
+    "length": 6,
+    "serious": 4
+  },
+  {
+    "name": "制作者50",
+    "creatorUrl": "https://example.com/creator50",
+    "work": "午前3時の校内放送",
+    "workUrl": "https://example.com/work50",
+    "length": 7,
+    "serious": 8
+  }
+]
