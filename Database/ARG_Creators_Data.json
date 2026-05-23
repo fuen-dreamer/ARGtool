@@ -62,5 +62,29 @@
     "workUrl": "https://note.com/asapinakg/n/nb6dbe4e8654c?sub_rt=share_b",
     "length": 5,
     "serious": 6
+  },
+  {
+    "name": "ぺいぽぴー",
+    "creatorUrl": "https://x.com/ARG_ObserverX",
+    "work": "おかしなサイト",
+    "workUrl": "https://x.com/ARG_ObserverX/status/2052674869158965430",
+    "length": 0,
+    "serious": 10
+  },
+  {
+    "name": "マッサマン",
+    "creatorUrl": "https://x.com/matsaman_ai",
+    "work": "潜影探偵事務所 vol.1「株式会社AIsle」",
+    "workUrl": "https://note.com/matsaman_ai/n/n16797e97453d",
+    "length": 3,
+    "serious": 10
+  },
+  {
+    "name": "T1",
+    "creatorUrl": "https://t1office.net/",
+    "work": "恨-ura-",
+    "workUrl": "https://t1office.net/projects/ura-horror-os",
+    "length": 2,
+    "serious": 8
   }
 ]
