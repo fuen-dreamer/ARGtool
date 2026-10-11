@@ -231,10 +231,8 @@ const cardMetrics={small:{bw:120,imgH:42,font:24,pad:7,gap:5,lineH:28},medium:{b
 for(const w of m.works){
   const bw=cardMetrics.bw;let cx=x0+w.x*pw;let cy=y0+w.y*ph;
   const text=w.name||'作品名未設定';ctx.font=cardMetrics.font+'px system-ui,sans-serif';const maxTextWidth=bw-cardMetrics.pad*2;const lines=[];let line='';for(const ch of text){if(line&&ctx.measureText(line+ch).width>maxTextWidth){lines.push(line);line=ch}else{line+=ch}}if(line)lines.push(line);const lineCount=Math.max(1,lines.length);const bh=cardMetrics.pad*2+cardMetrics.imgH+cardMetrics.gap+lineCount*cardMetrics.lineH;
-  // 軸をまたがないよう、カード全体が中央の縦軸・横軸に触れる場合は同じ象限内へ少し移動する。外枠を跨ぐ配置は許可する。
-  const midX=x0+pw/2,midY=y0+ph/2,halfW=bw/2,halfH=bh/2,clearance=12;
-  if(Math.abs(cx-midX)<halfW+clearance) cx = cx<=midX ? midX-halfW-clearance : midX+halfW+clearance;
-  // 横軸と交差しても上下には移動しない。外枠を跨ぐ配置も許可する。
+  // 編集画面で指定した座標をそのまま使う。中央の軸付近でも自動移動しない。
+  // そのため、作品をど真ん中に配置した場合も画像出力で位置がずれない。
   const top=cy-bh/2;const left=cx-bw/2;
   ctx.fillStyle='#fff';ctx.strokeStyle='#aab0b9';ctx.lineWidth=2;roundedRect(ctx,left,top,bw,bh,10);
   try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=w.src});const scale=Math.min((bw-cardMetrics.pad*2)/img.width,cardMetrics.imgH/img.height);const iw=img.width*scale,ih=img.height*scale;const imageAreaTop=top+cardMetrics.pad+(cardMetrics.imgH-ih)/2;ctx.drawImage(img,cx-iw/2,imageAreaTop,iw,ih)}catch{}
