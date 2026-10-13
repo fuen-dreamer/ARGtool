@@ -96,7 +96,8 @@ input[type=file]{display:none}
     <div class="toolbar">
       <label for="mapSelect">マップ：</label><select id="mapSelect" style="max-width:240px;padding:8px;border:1px solid #ccd1d9;border-radius:8px"></select>
       <button id="deleteMap" class="danger">マップを削除</button>
-      <label class="file-button" for="imageInput">＋ 画像を追加</label><input id="imageInput" type="file" accept="image/*" multiple>
+      <label class="file-button" for="imageInput">＋ 画像を追加（タイトル自動入力）</label><input id="imageInput" type="file" accept="image/*" multiple>
+      <button id="addTitleOnly" type="button">＋ タイトルだけ追加</button>
       <label for="cardSizeSelect">カードサイズ：</label><select id="cardSizeSelect" style="padding:8px;border:1px solid #ccd1d9;border-radius:8px"><option value="small">小</option><option value="medium" selected>中</option><option value="large">大</option></select>
       <button id="exportJson">データをバックアップ</button>
       <label class="file-button" for="importJson">バックアップを読み込む</label><input id="importJson" type="file" accept="application/json,.json">
@@ -112,7 +113,7 @@ input[type=file]{display:none}
           <div class="plot" id="plot" aria-label="ポジショニングマップ"></div>
         </div>
       </div>
-      <p class="hint">作品画像をドラッグして配置できます。画像をクリックすると右側で編集できます。</p>
+      <p class="hint">作品カードをドラッグして配置できます。カードをクリックすると右側で編集できます。</p>
     </div>
   </section>
   <aside class="panel">
@@ -133,9 +134,10 @@ input[type=file]{display:none}
     </div><div class="actions" style="margin-top:8px"><button type="button" id="resetBackground">配色を初期化</button></div></div>
     <div class="section">
       <h2>選択中の作品</h2>
-      <div id="noSelection" class="small">マップ上の作品を選択するか、画像を追加してください。</div>
+      <div id="noSelection" class="small">マップ上の作品を選択するか、作品を追加してください。</div>
       <div id="editWork" hidden>
-        <div class="field"><label for="workName">作品名</label><input id="workName" placeholder="作品名"></div>
+        <div class="field"><label for="workName">作品名（空欄でもOK）</label><input id="workName" placeholder="作品名"></div>
+        <div class="field"><button id="addOrChangeWorkImage" type="button">画像を追加</button><input id="selectedWorkImageInput" type="file" accept="image/*" style="display:none"><div class="small">タイトルだけで追加した作品にも、あとから画像を設定できます。</div></div>
         <div class="row">
           <div class="field"><label for="workX">横位置（%）</label><input id="workX" type="number" min="0" max="100" step="1" inputmode="numeric"></div>
           <div class="field"><label for="workY">縦位置（%）</label><input id="workY" type="number" min="0" max="100" step="1" inputmode="numeric"></div>
@@ -156,7 +158,8 @@ input[type=file]{display:none}
     <div class="help-head"><h2 id="helpTitle">ポジショニングマップの使い方</h2><button id="closeHelp" aria-label="使い方を閉じる">閉じる ✕</button></div>
     <ol>
       <li><strong>マップを作る：</strong>「＋ 新しいマップ」でマップを追加します。複数のマップを切り替えて管理できます。</li>
-      <li><strong>画像を追加する：</strong>「＋ 画像を追加」を押して、作品の画像を1枚以上選びます。作品名はファイル名から自動で設定されます。</li>
+      <li><strong>作品を追加する：</strong>「画像を追加（タイトル自動入力）」では、画像とファイル名をタイトルにした作品を追加できます。「タイトルだけ追加」では、タイトルのみの作品を追加できます。</li>
+      <li><strong>画像やタイトルを調整する：</strong>作品を選択すると、右側でタイトルを編集できます。タイトルを空欄にすると画像のみの表示になります。タイトルだけで追加した作品にも、選択中の「画像を追加」からあとで画像を設定できます。</li>
       <li><strong>作品を配置する：</strong>マップ上のカードをドラッグして移動します。カードをクリックすると、右側で作品名や横位置・縦位置を調整できます。</li>
       <li><strong>マップを整える：</strong>右側の「マップ設定」でタイトル、縦軸の上・下、横軸の左・右のラベルを変更できます。配色テーマや各エリアの背景色、カードサイズも調整できます。</li>
       <li><strong>画像として保存する：</strong>「PNG画像を保存」を押すと、現在表示しているマップをPNG画像としてダウンロードできます。</li>
@@ -199,10 +202,10 @@ function load(){try{maps=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}cat
 function renderMapSelect(){const sel=$('mapSelect');sel.innerHTML='';maps.forEach(m=>{const o=document.createElement('option');o.value=m.id;o.textContent=m.title||'無題のマップ';sel.append(o)});sel.value=activeId}
 function syncSettings(){const m=current();[['titleInput','title'],['topInput','top'],['bottomInput','bottom'],['leftInput','left'],['rightInput','right']].forEach(([i,k])=>$(i).value=m[k]||'');m.quadrantColors={...PALETTES.normal,...(m.quadrantColors||{})};if(!m.theme)m.theme='normal';['TL','TR','BL','BR'].forEach(k=>$('color'+k).value=m.quadrantColors[k.toLowerCase()]||PALETTES.normal[k.toLowerCase()]);$('cardSizeSelect').value=m.cardSize||'medium';renderThemeButtons();renderLabels();renderMapSelect()}
 function renderLabels(){const m=current();$('viewTitle').textContent=m.title||'無題のマップ';$('viewTop').textContent=m.top;$('viewBottom').textContent=m.bottom;$('viewLeft').textContent=m.left;$('viewRight').textContent=m.right}
-function renderPlot(){const plot=$('plot');plot.innerHTML='';const m=current();m.quadrantColors={...PALETTES.normal,...(m.quadrantColors||{})};plot.style.backgroundColor='#ffffff';plot.dataset.cardSize=m.cardSize||'medium';[['tl','tl'],['tr','tr'],['bl','bl'],['br','br']].forEach(([cls,key])=>{const area=document.createElement('div');area.className='quadrant '+cls;area.style.backgroundColor=m.quadrantColors[key];plot.append(area)});m.works.forEach(w=>{const el=document.createElement('div');el.className='work'+(w.id===selectedId?' selected':'');el.style.left=(w.x*100)+'%';el.style.top=(w.y*100)+'%';el.dataset.id=w.id;const img=document.createElement('img');img.src=w.src;img.alt='';const name=document.createElement('div');name.className='work-name';name.textContent=w.name||'作品名未設定';el.append(img,name);el.addEventListener('pointerdown',startDrag);el.addEventListener('click',e=>{e.stopPropagation();selectWork(w.id)});plot.append(el)})}
-function renderList(){const list=$('worksList');list.innerHTML='';current().works.forEach(w=>{const row=document.createElement('div');row.className='list-item';const img=document.createElement('img');img.src=w.src;const name=document.createElement('div');name.className='nm';name.textContent=w.name||'作品名未設定';const btn=document.createElement('button');btn.textContent='編集';btn.onclick=()=>selectWork(w.id);row.append(img,name,btn);list.append(row)})}
+function renderPlot(){const plot=$('plot');plot.innerHTML='';const m=current();m.quadrantColors={...PALETTES.normal,...(m.quadrantColors||{})};plot.style.backgroundColor='#ffffff';plot.dataset.cardSize=m.cardSize||'medium';[['tl','tl'],['tr','tr'],['bl','bl'],['br','br']].forEach(([cls,key])=>{const area=document.createElement('div');area.className='quadrant '+cls;area.style.backgroundColor=m.quadrantColors[key];plot.append(area)});m.works.forEach(w=>{const el=document.createElement('div');el.className='work'+(w.id===selectedId?' selected':'');el.style.left=(w.x*100)+'%';el.style.top=(w.y*100)+'%';el.dataset.id=w.id;if(w.src){const img=document.createElement('img');img.src=w.src;img.alt='';el.append(img)}if((w.name||'').trim()){const name=document.createElement('div');name.className='work-name';name.textContent=w.name;el.append(name)}el.addEventListener('pointerdown',startDrag);el.addEventListener('click',e=>{e.stopPropagation();selectWork(w.id)});plot.append(el)})}
+function renderList(){const list=$('worksList');list.innerHTML='';current().works.forEach(w=>{const row=document.createElement('div');row.className='list-item';if(w.src){const img=document.createElement('img');img.src=w.src;img.alt='';row.append(img)}const name=document.createElement('div');name.className='nm';name.textContent=(w.name||'').trim()||(w.src?'画像のみ':'タイトル未設定');const btn=document.createElement('button');btn.textContent='編集';btn.onclick=()=>selectWork(w.id);row.append(name,btn);list.append(row)})}
 function renderAll(){syncSettings();renderPlot();renderList();renderMapSelect();updateSelection()}
-function updateSelection(){const w=current().works.find(w=>w.id===selectedId);$('noSelection').hidden=!!w;$('editWork').hidden=!w;if(w){$('workName').value=w.name||'';$('workX').value=Math.round(w.x*100);$('workY').value=Math.round(w.y*100)}}
+function updateSelection(){const w=current().works.find(w=>w.id===selectedId);$('noSelection').hidden=!!w;$('editWork').hidden=!w;if(w){$('workName').value=w.name||'';$('workX').value=Math.round(w.x*100);$('workY').value=Math.round(w.y*100);$('addOrChangeWorkImage').textContent=w.src?'画像を変更':'画像を追加'}}
 function selectWork(id){selectedId=id;renderPlot();updateSelection()}
 function saveAndRender(){persist();renderAll()}
 [['titleInput','title'],['topInput','top'],['bottomInput','bottom'],['leftInput','left'],['rightInput','right']].forEach(([id,key])=>$(id).addEventListener('input',e=>{current()[key]=e.target.value;renderLabels();renderMapSelect();persist()}));
@@ -224,19 +227,23 @@ $('centerWork').onclick=()=>{const w=current().works.find(w=>w.id===selectedId);
 $('plot').addEventListener('click',()=>{selectedId='';renderPlot();updateSelection()});
 function startDrag(e){if(e.button!==undefined&&e.button!==0)return;const el=e.currentTarget,id=el.dataset.id; e.preventDefault(); e.stopPropagation(); selectedId=id; document.querySelectorAll('.work').forEach(node=>node.classList.toggle('selected',node.dataset.id===id)); updateSelection(); const plot=$('plot'); let moved=false; function move(ev){ev.preventDefault();const r=plot.getBoundingClientRect();const x=Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width));const y=Math.max(0,Math.min(1,(ev.clientY-r.top)/r.height));const w=current().works.find(w=>w.id===id);if(w){w.x=x;w.y=y;el.style.left=(x*100)+'%';el.style.top=(y*100)+'%';if(selectedId===id){$('workX').value=Math.round(x*100);$('workY').value=Math.round(y*100)}moved=true}} function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);if(moved)persist()} window.addEventListener('pointermove',move,{passive:false});window.addEventListener('pointerup',up,{once:true});window.addEventListener('pointercancel',up,{once:true})}
 async function shrinkImage(file){const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=data});const max=600,scale=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.84)}
-$('imageInput').addEventListener('change',async e=>{const files=[...e.target.files];for(const file of files){if(!file.type.startsWith('image/'))continue;try{const src=await shrinkImage(file);current().works.push({id:crypto.randomUUID(),name:file.name.replace(/\.[^.]+$/,''),src,x:.5,y:.5});}catch{alert(file.name+' を読み込めませんでした')}}selectedId=current().works.at(-1)?.id||'';e.target.value='';saveAndRender()});
+async function addImageFiles(input,includeTitle){const files=[...input.files];for(const file of files){if(!file.type.startsWith('image/'))continue;try{const src=await shrinkImage(file);current().works.push({id:crypto.randomUUID(),name:includeTitle?file.name.replace(/\.[^.]+$/,''):'',src,x:.5,y:.5});}catch{alert(file.name+' を読み込めませんでした')}}selectedId=current().works.at(-1)?.id||'';input.value='';saveAndRender()}
+$('imageInput').addEventListener('change',e=>addImageFiles(e.target,true));
+$('addOrChangeWorkImage').addEventListener('click',()=>{if(selectedId)$('selectedWorkImageInput').click()});
+$('selectedWorkImageInput').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;const w=current().works.find(item=>item.id===selectedId);if(!w){e.target.value='';return}try{w.src=await shrinkImage(file);saveAndRender()}catch{alert(file.name+' を読み込めませんでした')}e.target.value=''});
+$('addTitleOnly').addEventListener('click',()=>{const name=prompt('作品タイトルを入力してください');if(name===null)return;const trimmed=name.trim();if(!trimmed){alert('タイトルを入力してください。');return}const w={id:crypto.randomUUID(),name:trimmed,src:'',x:.5,y:.5};current().works.push(w);selectedId=w.id;saveAndRender();$('workName').focus();$('workName').select()});
 function roundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();ctx.stroke()}
 async function createMapCanvas(){const m=current(),W=3200,H=2400,pad={l:500,r:500,t:300,b:200},x0=pad.l,y0=pad.t,pw=W-pad.l-pad.r,ph=H-y0-pad.b;const c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.fillStyle='#20242b';ctx.textAlign='center';ctx.font='bold 88px system-ui,sans-serif';ctx.fillText(m.title||'無題のマップ',W/2,105,W-140);const qc={...PALETTES.normal,...(m.quadrantColors||{})};ctx.fillStyle=qc.tl;ctx.fillRect(x0,y0,pw/2,ph/2);ctx.fillStyle=qc.tr;ctx.fillRect(x0+pw/2,y0,pw/2,ph/2);ctx.fillStyle=qc.bl;ctx.fillRect(x0,y0+ph/2,pw/2,ph/2);ctx.fillStyle=qc.br;ctx.fillRect(x0+pw/2,y0+ph/2,pw/2,ph/2);ctx.strokeStyle='#dfe3e8';ctx.lineWidth=1;for(let i=1;i<10;i++){ctx.beginPath();ctx.moveTo(x0+pw*i/10,y0);ctx.lineTo(x0+pw*i/10,y0+ph);ctx.stroke();ctx.beginPath();ctx.moveTo(x0,y0+ph*i/10);ctx.lineTo(x0+pw,y0+ph*i/10);ctx.stroke()}ctx.strokeStyle='#858c96';ctx.lineWidth=3;ctx.strokeRect(x0,y0,pw,ph);ctx.beginPath();ctx.moveTo(x0+pw/2,y0);ctx.lineTo(x0+pw/2,y0+ph);ctx.moveTo(x0,y0+ph/2);ctx.lineTo(x0+pw,y0+ph/2);ctx.stroke();ctx.fillStyle='#315ee8';ctx.font='bold 68px system-ui,sans-serif';ctx.fillText(m.top,W/2,y0-105);ctx.fillStyle='#14804a';ctx.fillText(m.bottom,W/2,y0+ph+135);ctx.font='bold 54px system-ui,sans-serif';ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillStyle='#c45c17';ctx.fillText(m.left,x0-250,y0+ph/2);ctx.fillStyle='#7546bd';ctx.fillText(m.right,x0+pw+250,y0+ph/2);ctx.textBaseline='alphabetic';
 const cardMetrics={small:{bw:120,imgH:42,font:24,pad:7,gap:5,lineH:28},medium:{bw:170,imgH:62,font:32,pad:9,gap:6,lineH:37},large:{bw:210,imgH:80,font:38,pad:10,gap:7,lineH:44}}[m.cardSize||'medium'];
 for(const w of m.works){
   const bw=cardMetrics.bw;let cx=x0+w.x*pw;let cy=y0+w.y*ph;
-  const text=w.name||'作品名未設定';ctx.font=cardMetrics.font+'px system-ui,sans-serif';const maxTextWidth=bw-cardMetrics.pad*2;const lines=[];let line='';for(const ch of text){if(line&&ctx.measureText(line+ch).width>maxTextWidth){lines.push(line);line=ch}else{line+=ch}}if(line)lines.push(line);const lineCount=Math.max(1,lines.length);const bh=cardMetrics.pad*2+cardMetrics.imgH+cardMetrics.gap+lineCount*cardMetrics.lineH;
+  const hasImage=!!w.src;const text=(w.name||'').trim();const hasText=!!text;ctx.font=cardMetrics.font+'px system-ui,sans-serif';const maxTextWidth=bw-cardMetrics.pad*2;const lines=[];let line='';if(hasText){for(const ch of text){if(line&&ctx.measureText(line+ch).width>maxTextWidth){lines.push(line);line=ch}else{line+=ch}}if(line)lines.push(line)}const lineCount=lines.length;const imageHeight=hasImage?cardMetrics.imgH:0;const contentGap=hasImage&&hasText?cardMetrics.gap:0;const textHeight=lineCount*cardMetrics.lineH;const bh=Math.max(24,cardMetrics.pad*2+imageHeight+contentGap+textHeight);
   // 編集画面で指定した座標をそのまま使う。中央の軸付近でも自動移動しない。
   // そのため、作品をど真ん中に配置した場合も画像出力で位置がずれない。
   const top=cy-bh/2;const left=cx-bw/2;
   ctx.fillStyle='#fff';ctx.strokeStyle='#aab0b9';ctx.lineWidth=2;roundedRect(ctx,left,top,bw,bh,10);
-  try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=w.src});const scale=Math.min((bw-cardMetrics.pad*2)/img.width,cardMetrics.imgH/img.height);const iw=img.width*scale,ih=img.height*scale;const imageAreaTop=top+cardMetrics.pad+(cardMetrics.imgH-ih)/2;ctx.drawImage(img,cx-iw/2,imageAreaTop,iw,ih)}catch{}
-  ctx.fillStyle='#20242b';ctx.font=cardMetrics.font+'px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';const textTop=top+cardMetrics.pad+cardMetrics.imgH+cardMetrics.gap;lines.forEach((part,i)=>ctx.fillText(part,cx,textTop+i*cardMetrics.lineH,maxTextWidth));
+  if(hasImage){try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=w.src});const scale=Math.min((bw-cardMetrics.pad*2)/img.width,cardMetrics.imgH/img.height);const iw=img.width*scale,ih=img.height*scale;const imageAreaTop=top+cardMetrics.pad+(cardMetrics.imgH-ih)/2;ctx.drawImage(img,cx-iw/2,imageAreaTop,iw,ih)}catch{}}
+  if(hasText){ctx.fillStyle='#20242b';ctx.font=cardMetrics.font+'px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';const textTop=top+cardMetrics.pad+imageHeight+contentGap;lines.forEach((part,i)=>ctx.fillText(part,cx,textTop+i*cardMetrics.lineH,maxTextWidth));}
 }
 return {canvas:c,title:m.title||'ポジショニングマップ'};}
 function downloadPng(canvas,title){const a=document.createElement('a');a.download=(title||'ポジショニングマップ').replace(/[\\/:*?"<>|]/g,'_')+'.png';a.href=canvas.toDataURL('image/png');a.click()}
