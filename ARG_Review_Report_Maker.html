@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f8f5ed">
+<title>ARG感想レポートメーカー</title>
+<style>
+
+:root{--bg:#f8f5ed;--line:#e7e0d4;--ink:#263246;--muted:#697386;--accent:#315ee8;--accent-soft:#e8efff}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+header{padding:20px 24px;background:#fffdf8;border-bottom:1px solid var(--line)}
+h1{font-size:22px;line-height:1.35;margin:0}.sub{font-size:13px;color:var(--muted);margin-top:5px}
+.workflow-guide{max-width:1120px;margin:18px auto 0;padding:17px 20px;border:1px solid #dbe4fb;border-radius:15px;background:linear-gradient(110deg,#edf2ff 0%,#fffdf7 70%,#fff7d9 100%);box-shadow:0 3px 12px #25375b08}
+.workflow-heading{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}.workflow-heading strong{font-size:15px}.workflow-icon{display:grid;place-items:center;width:27px;height:27px;border-radius:9px;background:#fff1b8;color:#775b00}.workflow-caption{font-size:12px;color:var(--muted)}
+.workflow-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;list-style:none;margin:0;padding:0}.workflow-steps li{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1px solid #dce4f6;border-radius:11px;background:#ffffffc9}.step-number{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;font-weight:800;font-size:13px}.workflow-steps b{display:block;font-size:12px;line-height:1.4}.workflow-steps small{display:block;margin-top:3px;color:var(--muted);font-size:10px;line-height:1.4}
+main{max-width:1120px;margin:0 auto;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.panel{background:#fffefa;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 2px 10px #1d293908;min-width:0}
+h2{font-size:16px;margin:0 0 14px}.field{margin-bottom:13px}label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:#414854}
+input,textarea,button{font:inherit}input,textarea{width:100%;border:1px solid #cbd1da;border-radius:9px;padding:10px 11px;background:#fff;color:var(--ink)}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid #9bb5ff;outline-offset:2px}
+textarea{resize:vertical;min-height:120px;line-height:1.65}#promptOutput{min-height:440px;background:#fbfcff}
+.mode-label{font-size:13px;font-weight:700;margin:12px 0 8px}.mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;background:#f0f2f6;border-radius:11px}
+.mode-switch button{border:1px solid transparent;border-radius:8px;padding:10px 8px;background:transparent;color:#4d5562;cursor:pointer;font-weight:650}.mode-switch button.active{background:#fff;border-color:#cbd6ff;color:#2448b8;box-shadow:0 1px 4px #17203312}
+.mode-description{font-size:12px;color:var(--muted);margin:8px 0 16px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button.action,.link-button{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid #cbd0d8;border-radius:9px;padding:10px 13px;background:#fff;color:var(--ink);cursor:pointer;font-size:14px}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;box-shadow:0 3px 0 #2446b31c}button.primary:hover{background:#244bc3;color:#fff}
+.secondary-action{background:#fff;border-color:#d8deea;color:#34415b;font-size:12px!important}.required-mark{display:inline-block;margin-left:5px;font-size:11px;font-weight:700;color:#b42318}.optional-mark{display:inline-block;margin-left:5px;font-size:11px;font-weight:500;color:var(--muted)}
+.link-button:hover,button:hover{filter:brightness(.98)}.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.links .link-button{flex:1;min-width:90px;background:#fff;border-color:#cbd4e8;color:#33415d}
+.note{font-size:12px;color:var(--muted);margin:12px 0 0}.status{font-size:12px;color:#247044;min-height:18px;margin-top:7px}.section-title{font-size:13px;font-weight:750;margin:18px 0 6px}
+.field-group{padding:13px 13px 1px;border:1px solid var(--line);border-radius:12px;margin:11px 0;background:#fffefa}.field-group-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:750;margin:0 0 12px}.field-group-title:before{content:"";width:4px;height:1.1em;border-radius:4px;background:#9bb5ff}.overview-group{background:#f3faf2;border-color:#d8ead8}.overview-group .field-group-title:before{background:#8dc89a}.review-group{background:#fff6f8;border-color:#f1dce3}.review-group .field-group-title:before{background:#e8a9bc}
+.field-hint{font-size:11px;color:var(--muted);margin:5px 0 12px;line-height:1.5}.input-tools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:10px 0 4px}.input-tools .field-hint{margin:0}.sample-button{background:#fff1b8!important;border-color:#eadb91!important;color:#5e4a05!important;font-size:12px!important}\n#fetchInfoBtn:disabled{opacity:.65;cursor:wait}
+.privacy-note{padding-top:10px;border-top:1px solid #ece7de}.ai-service-area{margin-top:16px;padding:13px 14px;border-radius:12px;background:#edf2ff;border:1px solid #d8e2ff}.ai-service-area .section-title{margin-top:0}.flow-hint{font-size:12px;color:#4e5c77;margin:0}.social-area{margin-top:14px;padding:13px 14px;border-radius:12px;background:#fff8e4;border:1px solid #f0e3b5}.social-area .section-title{margin-top:0}
+footer{max-width:1120px;margin:0 auto;padding:0 20px 22px;color:var(--muted);font-size:12px}
+@media(max-width:760px){.workflow-guide{margin:12px 12px 0;padding:14px}.workflow-steps{grid-template-columns:repeat(2,minmax(0,1fr))}main{grid-template-columns:1fr;padding:12px}.panel{padding:15px}header{padding:16px}#promptOutput{min-height:380px}}
+@media(max-width:420px){.workflow-steps{grid-template-columns:1fr}.workflow-caption{flex-basis:100%;margin-left:36px}.actions>*{width:100%}}
+
+
+.tweet-howto{margin-top:10px;padding:12px 13px;border:1px solid #eadb9a;border-radius:10px;background:#fffdf2;color:#51451a}
+.tweet-howto-title{font-size:13px;font-weight:800;margin-bottom:6px}
+.tweet-howto ol{margin:0;padding-left:20px;font-size:12px;line-height:1.65}
+.tweet-howto li{padding:1px 0}
+.tweet-howto p{margin:7px 0 0;font-size:11px;line-height:1.5;color:#746a45}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>ARG感想レポートメーカー</h1>
+  <div class="sub">作品情報と感想から、SNS投稿用の縦長画像を生成するためのプロンプトを作成します。</div>
+</header>
+
+<section class="workflow-guide" aria-label="使い方">
+  <div class="workflow-heading"><span class="workflow-icon" aria-hidden="true">✦</span><strong>かんたん4ステップ</strong><span class="workflow-caption">入力して、コピーして、画像を生成</span></div>
+  <ol class="workflow-steps">
+    <li><span class="step-number">1</span><span><b>作品情報と感想を入力</b><small>概要は任意・感想はメモでもOK</small></span></li>
+    <li><span class="step-number">2</span><span><b>感想の整え方を選ぶ</b><small>ポジティブ／そのまま活かす</small></span></li>
+    <li><span class="step-number">3</span><span><b>プロンプトをコピー</b><small>コピーした内容を使います</small></span></li>
+    <li><span class="step-number">4</span><span><b>AIで画像を生成</b><small>AIサービスに貼り付けて実行</small></span></li>
+  </ol>
+</section>
+
+<main>
+  <section class="panel" aria-labelledby="inputHeading">
+    <h2 id="inputHeading">作品情報・感想</h2>
+    <div class="field-group">
+    <div class="field-group-title">作品情報</div>
+    <div class="field">
+      <label for="url">① サイトのURL <span class="required-mark">必須</span></label>
+      <input id="url" type="url" placeholder="https://example.com" required>
+      <div class="input-tools">
+        <button type="button" class="action secondary-action" id="fetchInfoBtn">URLから作品情報を取得</button>
+        <span class="field-hint">r.jina.ai を使ってタイトルと概要を取得します。取得した内容は入力欄で確認・編集できます。</span>
+      </div>
+      <div class="status" id="fetchStatus" aria-live="polite"></div>
+    </div>
+    <div class="field">
+      <label for="title">② 作品のタイトル <span class="required-mark">必須</span></label>
+      <input id="title" type="text" placeholder="例：〇〇事件調査記録" required>
+    </div>
+    <div class="field">
+      <label for="creator">③ 制作者名 <span class="optional-mark">任意</span></label>
+      <input id="creator" type="text" placeholder="分からない場合は空欄でOK">
+    </div>
+    </div>
+    <div class="field-group overview-group">
+    <div class="field-group-title">作品の紹介 <span class="optional-mark">任意</span></div>
+    <div class="field">
+      <label for="overview">④ 作品の概要 <span class="optional-mark">任意</span></label>
+      <textarea id="overview" placeholder="作品サイトに記載されている概要を入力してください。分からなければ空欄でOKです。"></textarea>
+      <p class="field-hint">作品サイトに書かれている内容を入力してください。空欄の場合、プロンプト生成時にURLへアクセスして概要を確認することはありません。必要なら上の「URLから作品情報を取得」ボタンを使ってください。</p>
+    </div>
+    </div>
+    <div class="field-group review-group">
+    <div class="field-group-title">あなたの感想</div>
+    <div class="field">
+      <label for="review">⑤ 感想 <span class="required-mark">必須</span></label>
+      <textarea id="review" placeholder="印象に残った場面、遊んで感じたこと、良かった点などを自由に入力してください。箇条書きやメモでもOKです。" required></textarea>
+      <p class="field-hint">きれいな文章にする必要はありません。自分が実際に感じたことを、そのまま書いてください。</p>
+    </div>
+    <div class="mode-label">感想の整え方</div>
+    <div class="mode-switch" role="group" aria-label="感想の整え方">
+      <button type="button" id="positiveMode" class="active" aria-pressed="true">ポジティブ</button>
+      <button type="button" id="faithfulMode" aria-pressed="false">そのまま活かす</button>
+    </div>
+    <p class="mode-description" id="modeDescription">率直さを残しつつ、否定的な表現を少し柔らかくして、ほどほどにポジティブに整えます。</p>
+    </div>
+    <div class="input-tools">
+      <button type="button" class="action sample-button" id="sampleBtn">入力例を試す</button>
+      <span class="field-hint">サンプル内容が入力欄に入ります。実際の情報に書き換えてください。</span>
+    </div>
+    <p class="note privacy-note">入力内容はこのページ内でプロンプトと投稿文に反映されます。サーバーへの送信は行いません。</p>
+  </section>
+
+  <section class="panel" aria-labelledby="outputHeading">
+    <h2 id="outputHeading">画像生成プロンプト</h2>
+    <textarea id="promptOutput" readonly aria-label="生成された画像生成プロンプト"></textarea>
+    <div class="actions">
+      <button type="button" class="primary action" id="copyBtn">プロンプトをコピーして次へ</button>
+      <button type="button" class="action secondary-action" id="selectBtn">全文を選択（コピーできない場合）</button>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+    <div class="ai-service-area">
+    <div class="section-title">次に、AIサービスを開く</div>
+    <p class="flow-hint">先に上の「プロンプトをコピー」を押してから、使いたいサービスを選んでください。</p>
+    <div class="links">
+      <a class="link-button" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+      <a class="link-button" href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+      <a class="link-button" href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer">Copilot</a>
+    </div>
+    <p class="note">AIサービスを開いたら、コピーしたプロンプトを貼り付けて画像を生成してください。サービス側の機能や対応状況によって、結果は異なる場合があります。</p>
+    </div>
+    <div class="social-area">
+    <div class="section-title">SNSに投稿する</div>
+    <button type="button" class="action" id="tweetBtn">𝕏 ツイート文を作成</button>
+    <div class="tweet-howto" role="note" aria-label="Xへの投稿手順">
+      <div class="tweet-howto-title">投稿するときは、画像の添付を忘れずに！</div>
+      <ol>
+        <li>「ツイート文を作成」を押して、投稿画面を開く</li>
+        <li><strong>作成したARG感想画像を添付する</strong></li>
+        <li>文章と画像を確認して投稿する</li>
+      </ol>
+      <p>※画像は自動では添付されません。Xの投稿画面で、画像追加ボタンから添付してください。</p>
+    </div>
+    </div>
+  </section>
+</main>
+<footer>※概要が空欄の場合、画像生成プロンプト内でURLへのアクセスや作品内容の確認を指示しません。必要に応じて「URLから作品情報を取得」ボタンで情報を取得してください。</footer>
+<script>
+const $ = id => document.getElementById(id);
+let mode = 'positive';
+
+function buildPrompt(){
+  const title = $('title').value.trim();
+  const creator = $('creator').value.trim();
+  const url = $('url').value.trim();
+  const review = $('review').value.trim();
+
+  const modeInstructions = mode === 'positive'
+    ? `【感想の編集方針：ほどほどにポジティブ】
+- 元の感想の事実や体験を変えず、全体として少し明るく、読み手が受け取りやすい表現に整えてください。過度に褒めたり、宣伝文のようにしたりする必要はありません。
+- 感想に良かった点・興味深かった点・楽しめた点が少しでも含まれていれば、それを先に伝え、作品の印象が前向きに伝わる構成にしてください。
+- 不満や批判が中心の感想でも、否定的な評価をそのまま強く並べるのではなく、気になった点や合わなかった点として、落ち着いた柔らかい言い回しに整えてください。必要に応じて「個人的には」「〜が少し気になった」など、主観として自然に伝わる表現を使ってください。
+- ネガティブな内容をすべて削除したり、無理に褒め言葉へ変換したりしないでください。重要な不満や注意点は、意味を変えずに簡潔に残してください。
+- 元の感想にない長所、楽しさ、評価、体験、事実、おすすめポイントを作り出してはいけません。元の感想に肯定的な材料がない場合は、架空の褒め言葉を足さず、否定的な表現を穏やかに整える範囲で、全体の印象を少し柔らかくしてください。
+- 目指すのは「絶賛」ではなく「率直さを残した、ほどほどにポジティブな感想」です。`
+    : `【感想の編集方針：そのまま活かす】
+- ポジティブな意見もネガティブな意見も、書き手の評価・率直さ・温度感をできるだけ変えずに残してください。
+- 不満、違和感、批判、惜しいと感じた点を勝手に削除したり、無理に前向きな表現へ言い換えたりしないでください。
+- 意味を変えない範囲で、文章の流れや表現だけを読みやすく整えてください。
+- 元の感想にない体験・評価・事実・おすすめポイントを創作しないでください。`;
+
+  const overview = $('overview').value.trim();
+  const creatorImageInstruction = creator
+    ? `5. 制作者名\n- 見出し「制作者名」にライトグリーンのマーカーを使用してください。\n- 「制作者名」とともに、入力された制作者名を正確に表示してください。\n- 名前を推測・改変しないでください。\n\n`
+    : '';
+  const overviewInputInstruction = overview
+    ? `- ユーザーが「作品の概要」を入力している場合は、その内容を「作品の紹介」欄の根拠として使用してください。\n- 入力された概要を勝手に書き換えたり、情報を付け足したりしないでください。\n`
+    : `- 「作品の概要」が未入力の場合は、作品サイトURLにアクセスしたり、ページ本文を確認したり、外部から情報を取得したりしてはいけません。\n- 未入力の場合は、「作品の紹介」という見出しも本文も画像に一切出力しないでください。空欄の枠、代替文、概要が未入力である旨の説明も入れないでください。\n`;
+
+  return `あなたはARG（代替現実ゲーム）の感想を、SNS投稿用の画像にまとめるデザイナー兼編集者です。
+以下の入力情報をもとに、1080×1350px、アスペクト比4:5の縦長画像を1枚生成してください。画像内の日本語は正確に表示し、スマートフォンで読みやすいレイアウトにしてください。
+本画像は、ノートを撮影した写真ではなく、ノートの紙面をキャンバス全体に描画した平面のグラフィックデザインです。
+机や室内などの背景を生成せず、画像の四辺すべてを紙面で埋めてください。
+この条件は、装飾や雰囲気の演出よりも優先します。
+
+━━━━━━━━━━━━━━━━━━
+【最優先：情報の正確性】
+━━━━━━━━━━━━━━━━━━
+作品情報を推測・創作・補完してはいけません。入力された作品タイトル、URL、感想を正確に扱ってください。制作者名が入力されている場合のみ、その名前を正確に扱ってください。
+
+■ 作品概要の扱い
+${overviewInputInstruction}
+- URLの文字列、作品タイトル、制作者名、一般知識、過去の知識、検索結果の断片、他サイトの情報から作品内容を推測してはいけません。作品紹介の情報源として使えるのは、ユーザーが入力した概要だけです。概要が未入力の場合は、URLを開いたり内容を確認したりせず、作品紹介を省略してください。
+- 作品紹介は2～3文にすることを必須条件としません。情報が十分なら2～3文程度、少なければ1文または1行だけでも構いません。事実が一つだけなら、その事実だけを記載してください。文章量を増やすための説明、キャッチコピー、一般論、推測を追加してはいけません。
+- 作品紹介とユーザーの感想を明確に区別してください。感想の内容を作品サイトに書かれた事実のように扱わないでください。
+
+━━━━━━━━━━━━━━━━━━
+【入力情報】
+━━━━━━━━━━━━━━━━━━
+作品タイトル：
+${title}
+
+${creator ? `制作者名：
+${creator}
+
+` : ''}作品サイトURL：
+${url}
+
+【作品概要：ユーザー入力】
+${overview}
+
+【ユーザーが入力した感想】
+${review}
+
+━━━━━━━━━━━━━━━━━━
+【感想の編集方針】
+━━━━━━━━━━━━━━━━━━
+${modeInstructions}
+- 感想は入力内容を意味のまとまりごとに整理し、読みやすく短くしてください。
+- 感想に含まれる体験・意見・具体例を大切にし、意味を変えないでください。
+- 入力されていない感想、評価、体験、仕掛け、ストーリー、実績、おすすめポイントなどを追加しないでください。
+- 感想と作品概要を明確に区別してください。
+- 感想が長い場合は、意味を変えない範囲で簡潔に整理してください。
+
+━━━━━━━━━━━━━━━━━━
+【全体デザインのテイスト】
+━━━━━━━━━━━━━━━━━━
+画像全体をノートページとしてデザインし、バレットジャーナル風の親しみやすくおしゃれな感想レポートにしてください。
+
+■ ノートと背景
+- 画面全体を1枚のノートページで埋め尽くし、真上から見たフラットなデザインにしてください。
+- ノートページ以外の背景は表示しないでください。机、木目、文房具、手、小物、背景の影などは含めないでください。
+- 薄いクリーム色またはオフホワイトのノート用紙を使用してください。
+- 紙のテクスチャは控えめにし、画面全体に薄い青色の水平罫線、左側に赤色または薄いオレンジ色の縦マージン線を入れてください。
+- バレットジャーナルや手帳に手書きでまとめたような、親しみやすくおしゃれな雰囲気にしてください。
+- カラフルにしつつ、装飾過多にならないようにしてください。文字を主役にし、余白を十分に確保してください。
+
+■ 文字とマーカー
+- 読みやすく温かみのある日本語の手書き風フォントを使用してください。ただし本文は雰囲気より正確さと読みやすさを優先してください。
+- 作品タイトルや見出しは太めの手書きペン風にしても構いません。
+- 見出しや重要なキーワードの背後または下線に、半透明のパステルカラーの蛍光ペン風マーカーを使用してください。
+- 使用色はライトブルー、イエロー、ライトピンク、ライトグリーンです。文字を隠したり、読みにくくしたりしないでください。
+- 見出しの横や末尾に、控えめな手書きの3本線スパークルや下線を添えても構いません。
+- 写真、人物、イラスト、キャラクター、グラフィックアイコン、商品画像、硬い図形枠、架空の図や絵は使用しないでください。
+
+━━━━━━━━━━━━━━━━━━
+【推奨レイアウト】
+━━━━━━━━━━━━━━━━━━
+縦長ノート1ページを使用し、入力内容に応じて柔軟に配置してください。
+
+1. 上部：小見出し「#ARG感想レポート」
+- ライトブルーのマーカーを使用してください。
+- 作品タイトルより目立たない大きさにしてください。
+
+2. メイン：作品タイトル
+- 入力された作品タイトルを最も大きく、目立つように配置してください。
+- イエローのマーカーを使用しても構いません。
+- 文字列を短縮、改変、英訳しないでください。
+
+3. 作品の紹介（ユーザーが概要を入力している場合のみ）
+- 見出しは「作品の紹介」とし、ライトグリーンのマーカーを使用してください。
+- ユーザーが入力した概要だけを掲載してください。URLにアクセスして情報を補ってはいけません。
+- 情報量に応じて1行から2～3文程度にしてください。1行だけでも構いません。
+- 紹介に使える情報がなければ、「作品の紹介」の見出しと本文を両方とも完全に省略してください。空欄の枠や、取得できなかった旨の説明も画像に入れてはいけません。
+- 空白を埋めるために説明を追加してはいけません。
+
+4. 感想
+- 見出しは「感想」とし、ライトピンクのマーカーを使用してください。
+- 入力された感想を選択中の編集方針に従って、読みやすい短い段落や箇条書きに整理してください。
+- 元の感想にない評価やおすすめポイントを追加してはいけません。
+
+${creatorImageInstruction.trimEnd()}
+
+6. 下部：作品サイトURL
+- 小見出し「作品サイトURL」にライトブルーのマーカーを使用してください。
+- URLは入力された文字列を正確に表示し、省略・改変・短縮しないでください。
+- スマートフォンでも読み取れる大きさにしてください。
+
+■ レイアウト調整
+- 各セクションの分量に応じて余白を柔軟に調整してください。
+- 文章量が少ない場合は余白を活かし、文章や装飾を付け足さないでください。
+- 文章量が多い場合は、意味を変えない範囲で簡潔に整理し、装飾を減らしてください。
+- すべてのセクションを必ず同じ大きさで配置する必要はありません。読みやすさを優先してください。
+
+━━━━━━━━━━━━━━━━━━
+【文字の読みやすさ：最重要】
+━━━━━━━━━━━━━━━━━━
+- 手書き風の雰囲気よりも、文字の正確さと読みやすさを最優先してください。
+- 作品タイトルを画像内で最も大きくしてください。
+- 見出しはタイトルの50～60％程度、本文は30～40％程度の文字サイズを目安にしてください。
+- URLは小さくしすぎず、正確に表示してください。
+- 見出しと本文、各セクションの間に十分な余白を設けてください。
+- 文字同士を重ねず、罫線・マーカー・装飾を文字の上に重ねないでください。
+- 日本語の漢字、ひらがな、カタカナを正確に表示し、文字化け、誤字脱字、不要な文字を避けてください。
+- 作品タイトルとURLは入力どおりに表示してください。
+- 制作者名が入力されている場合のみ、制作者名を正確に表示してください。未入力の場合は「制作者名」の見出しも名前も画像に出力しないでください。
+- 文章量が少ない場合は、文章を増やさず余白で調整してください。
+
+━━━━━━━━━━━━━━━━━━
+【禁止事項】
+━━━━━━━━━━━━━━━━━━
+- 作品サイトやユーザー入力にない事実、感想、おすすめポイント、キャッチコピーの創作
+- URL、タイトル、制作者名、一般知識からの作品内容の推測
+- 入力された作品概要の勝手な書き換えや情報の追加
+- サイト本文を確認できていないのに、確認したかのように扱うこと
+- 情報が少ないことを理由にした作品概要の水増し
+- 机などの背景、写真、人物、イラスト、キャラクター、アイコン、架空の図や絵
+- 読みにくい小さな文字、文字の重なり、文字化け、過度な装飾
+- 空白を埋めるためだけの文章や装飾
+
+━━━━━━━━━━━━━━━━━━
+【最終チェック】
+━━━━━━━━━━━━━━━━━━
+完成前に、次の点を確認してください。
+- 作品タイトルとURLが入力どおり正確か。
+- 制作者名が入力されている場合のみ正確に表示し、未入力の場合は制作者名の項目自体を出力していないか。
+- 作品の紹介は、ユーザーが入力した概要の内容に忠実か。概要が未入力の場合は、URLにアクセスせず作品紹介を省略しているか。
+- 作品の紹介に使える情報が取得できなかった場合、「作品の紹介」の見出しも本文も出力していないか。
+- 概要に根拠のない説明が含まれていないか。文章が短くても、情報を追加せずそのままにしているか。
+- 作品概要とユーザーの感想が混同されていないか。
+- 感想に入力されていない体験や評価を追加していないか。
+- 日本語が正確で、スマートフォンで読みやすいか。
+- 文章量が少ない場合に、文章を創作せず余白で調整しているか。
+
+【完成イメージ】
+1080×1350px、アスペクト比4:5の縦長画像。薄いクリーム色またはオフホワイトのノートページに、薄い青色の水平罫線と左側の赤または薄いオレンジ色の縦マージン線を入れた、バレットジャーナル風のARG感想レポート。入力された作品情報と感想を正確に反映し、作品の紹介はユーザーが入力した概要だけを使用してください。概要が未入力の場合はURLにアクセスせず、その欄自体を省略してください。制作者名が未入力の場合も、その欄自体を省略してください。情報が少ない場合は1行だけ、情報がない場合は概要欄を省略してください。日本語の正確さ、読みやすさ、余白を最優先してください。`;
+
+}
+
+function updatePrompt(){
+  $('promptOutput').value = buildPrompt();
+  $('status').textContent = '';
+}
+function setMode(next){
+  mode = next;
+  $('positiveMode').classList.toggle('active', mode === 'positive');
+  $('faithfulMode').classList.toggle('active', mode === 'faithful');
+  $('positiveMode').setAttribute('aria-pressed', String(mode === 'positive'));
+  $('faithfulMode').setAttribute('aria-pressed', String(mode === 'faithful'));
+  $('modeDescription').textContent = mode === 'positive'
+    ? '率直さを残しつつ、否定的な表現を少し柔らかくして、ほどほどにポジティブに整えます。'
+    : 'ポジティブ・ネガティブの両方を残し、率直な評価や温度感を変えずに整えます。';
+  updatePrompt();
+}
+['title','creator','url','review','overview'].forEach(id => $(id).addEventListener('input', updatePrompt));
+
+function validateRequired(){
+  const fields = [
+    ['title', '作品のタイトル'],
+    ['url', 'サイトのURL'],
+    ['review', '感想']
+  ];
+  for (const [id, label] of fields) {
+    const field = $(id);
+    if (!field.value.trim()) {
+      $('status').textContent = `「${label}」を入力してください。`;
+      field.focus();
+      return false;
+    }
+  }
+  if (!$('url').checkValidity()) {
+    $('status').textContent = 'サイトのURLを正しい形式で入力してください。';
+    $('url').focus();
+    return false;
+  }
+  return true;
+}
+
+$('fetchInfoBtn').addEventListener('click', async () => {
+  const rawUrl = $('url').value.trim();
+  const fetchStatus = $('fetchStatus');
+  if (!rawUrl) {
+    fetchStatus.style.color = '#b42318';
+    fetchStatus.textContent = '先にサイトのURLを入力してください。';
+    $('url').focus();
+    return;
+  }
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(rawUrl);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) throw new Error('invalid protocol');
+  } catch {
+    fetchStatus.style.color = '#b42318';
+    fetchStatus.textContent = 'http:// または https:// から始まるURLを入力してください。';
+    $('url').focus();
+    return;
+  }
+
+  const button = $('fetchInfoBtn');
+  button.disabled = true;
+  button.textContent = '取得中…';
+  fetchStatus.style.color = '#4e5c77';
+  fetchStatus.textContent = 'r.jina.ai からページ情報を取得しています…';
+
+  try {
+    const readerUrl = 'https://r.jina.ai/' + parsedUrl.href;
+    const response = await fetch(readerUrl, { headers: { 'Accept': 'text/plain' } });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const result = await response.text();
+
+    const titleMatch = result.match(/^Title:\s*(.*?)\s*$/m);
+    const contentMatch = result.match(/^Markdown Content:\s*\r?\n([\s\S]*)$/m);
+    const filled = [];
+
+    if (titleMatch && titleMatch[1].trim()) {
+      $('title').value = titleMatch[1].trim();
+      filled.push('作品のタイトル');
+    }
+    if (contentMatch && contentMatch[1].trim()) {
+      $('overview').value = contentMatch[1].trim();
+      filled.push('作品の概要');
+    }
+
+    updatePrompt();
+    if (filled.length) {
+      fetchStatus.style.color = '#247044';
+      fetchStatus.textContent = `${filled.join('・')}を入力欄に転記しました。内容を確認して必要に応じて編集してください。`;
+    } else {
+      fetchStatus.style.color = '#b45309';
+      fetchStatus.textContent = '取得結果からタイトルまたは概要を読み取れませんでした。入力欄に手動で入力してください。';
+    }
+  } catch (error) {
+    fetchStatus.style.color = '#b42318';
+    fetchStatus.textContent = '情報を取得できませんでした。URLや通信状況を確認するか、手動で入力してください。';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'URLから作品情報を取得';
+  }
+});
+
+$('positiveMode').addEventListener('click', () => setMode('positive'));
+$('faithfulMode').addEventListener('click', () => setMode('faithful'));
+document.querySelectorAll('a.link-button').forEach(link => {
+  link.addEventListener('click', event => {
+    if (!validateRequired()) event.preventDefault();
+  });
+});
+$('copyBtn').addEventListener('click', async () => {
+  if (!validateRequired()) return;
+  const text = $('promptOutput').value;
+  try {
+    await navigator.clipboard.writeText(text);
+    $('status').textContent = '画像生成プロンプトをコピーしました。';
+  } catch {
+    $('promptOutput').focus();
+    $('promptOutput').select();
+    $('status').textContent = '全文を選択しました。コピーしてください（Ctrl+C / ⌘C）。';
+  }
+});
+$('selectBtn').addEventListener('click', () => {
+  if (!validateRequired()) return;
+  $('promptOutput').focus();
+  $('promptOutput').select();
+  $('status').textContent = 'プロンプト全体を選択しました。';
+});
+$('tweetBtn').addEventListener('click', () => {
+  if (!validateRequired()) return;
+  const title = $('title').value.trim();
+  const url = $('url').value.trim();
+  const appUrl = /^https?:$/.test(window.location.protocol) ? window.location.href.split('#')[0] : '';
+  const promoText = appUrl ? `\n\n▼ ARG感想レポートメーカー\n${appUrl}` : '';
+  const tweetText = `「${title}」のARG感想レポートを作りました！${url ? `\n\n🎮 作品サイト：\n${url}` : ''}\n\nあなたもARGの感想を、SNS投稿用の画像にしてみませんか？${promoText}\n\n#ARG感想レポート`;
+  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(tweetText), '_blank', 'noopener,noreferrer');
+});
+
+$('sampleBtn').addEventListener('click', () => {
+  $('title').value = 'サンプル作品名';
+  $('creator').value = 'サンプル制作者';
+  $('url').value = 'https://example.com/';
+  $('overview').value = 'サンプル作品の概要。実際の作品サイトの記載に合わせて書き換えてください。';
+  $('review').value = '最初は何が起きているのか分からなかったけれど、少しずつ情報がつながっていくのが楽しかった。最後まで考えながら遊べるのが良かった。';
+  $('status').textContent = '入力例を入れました。実際の作品情報・感想に書き換えてください。';
+  updatePrompt();
+});
+updatePrompt();
+</script>
+</body>
+</html>
