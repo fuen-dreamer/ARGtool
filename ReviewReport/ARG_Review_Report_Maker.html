@@ -10,7 +10,12 @@
 :root{--bg:#f8f5ed;--line:#e7e0d4;--ink:#263246;--muted:#697386;--accent:#315ee8;--accent-soft:#e8efff}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
-header{padding:20px 24px;background:#fffdf8;border-bottom:1px solid var(--line)}
+header{padding:18px 24px;background:#fffdf8;border-bottom:1px solid var(--line)}
+.header-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.header-copy{min-width:220px;flex:1}
+.header-nav{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.header-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 11px;border:1px solid #d7dce5;border-radius:9px;background:#fff;color:#33415d;text-decoration:none;font-size:12px;font-weight:700;white-space:nowrap}
+.header-nav a:hover{background:#f2f5fb}
 h1{font-size:22px;line-height:1.35;margin:0}.sub{font-size:13px;color:var(--muted);margin-top:5px}
 .workflow-guide{max-width:1120px;margin:18px auto 0;padding:17px 20px;border:1px solid #dbe4fb;border-radius:15px;background:linear-gradient(110deg,#edf2ff 0%,#fffdf7 70%,#fff7d9 100%);box-shadow:0 3px 12px #25375b08}
 .workflow-heading{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}.workflow-heading strong{font-size:15px}.workflow-icon{display:grid;place-items:center;width:27px;height:27px;border-radius:9px;background:#fff1b8;color:#775b00}.workflow-caption{font-size:12px;color:var(--muted)}
@@ -30,10 +35,15 @@ button.primary{background:var(--accent);border-color:var(--accent);color:#fff;fo
 .link-button:hover,button:hover{filter:brightness(.98)}.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.links .link-button{flex:1;min-width:90px;background:#fff;border-color:#cbd4e8;color:#33415d}
 .note{font-size:12px;color:var(--muted);margin:12px 0 0}.status{font-size:12px;color:#247044;min-height:18px;margin-top:7px}.section-title{font-size:13px;font-weight:750;margin:18px 0 6px}
 .field-group{padding:13px 13px 1px;border:1px solid var(--line);border-radius:12px;margin:11px 0;background:#fffefa}.field-group-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:750;margin:0 0 12px}.field-group-title:before{content:"";width:4px;height:1.1em;border-radius:4px;background:#9bb5ff}.overview-group{background:#f3faf2;border-color:#d8ead8}.overview-group .field-group-title:before{background:#8dc89a}.review-group{background:#fff6f8;border-color:#f1dce3}.review-group .field-group-title:before{background:#e8a9bc}
-.field-hint{font-size:11px;color:var(--muted);margin:5px 0 12px;line-height:1.5}.input-tools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:10px 0 4px}.input-tools .field-hint{margin:0}.sample-button{background:#fff1b8!important;border-color:#eadb91!important;color:#5e4a05!important;font-size:12px!important}\n#fetchInfoBtn:disabled{opacity:.65;cursor:wait}
+.field-hint{font-size:11px;color:var(--muted);margin:5px 0 12px;line-height:1.5}.input-tools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:10px 0 4px}.input-tools .field-hint{margin:0}.sample-button{background:#fff1b8!important;border-color:#eadb91!important;color:#5e4a05!important;font-size:14px!important;font-weight:750;padding:12px 16px!important;min-height:46px;box-shadow:0 2px 0 #d8c77855}
+.sample-tools{margin:0 0 14px;padding:10px 12px;border:1px solid #eadb91;border-radius:11px;background:#fff9df}
+.sample-tools .field-hint{font-size:12px}
+.sample-creator-note{margin:-6px 0 14px;padding:0 2px;font-size:11px;line-height:1.6;color:#7b8190}.sample-creator-note a{color:#65708a;text-decoration:underline;text-underline-offset:2px}.sample-creator-note a:hover{color:#315ee8}\n#fetchInfoBtn:disabled{opacity:.65;cursor:wait}
+#sampleBtn:disabled{opacity:.65;cursor:wait}
 .privacy-note{padding-top:10px;border-top:1px solid #ece7de}.ai-service-area{margin-top:16px;padding:13px 14px;border-radius:12px;background:#edf2ff;border:1px solid #d8e2ff}.ai-service-area .section-title{margin-top:0}.flow-hint{font-size:12px;color:#4e5c77;margin:0}.social-area{margin-top:14px;padding:13px 14px;border-radius:12px;background:#fff8e4;border:1px solid #f0e3b5}.social-area .section-title{margin-top:0}
 footer{max-width:1120px;margin:0 auto;padding:0 20px 22px;color:var(--muted);font-size:12px}
-@media(max-width:760px){.workflow-guide{margin:12px 12px 0;padding:14px}.workflow-steps{grid-template-columns:repeat(2,minmax(0,1fr))}main{grid-template-columns:1fr;padding:12px}.panel{padding:15px}header{padding:16px}#promptOutput{min-height:380px}}
+
+@media(max-width:760px){.header-inner{align-items:flex-start}.header-nav{justify-content:flex-start;width:100%}.header-nav a{flex:1}.workflow-guide{margin:12px 12px 0;padding:14px}.workflow-steps{grid-template-columns:repeat(2,minmax(0,1fr))}main{grid-template-columns:1fr;padding:12px}.panel{padding:15px}header{padding:16px}#promptOutput{min-height:380px}}
 @media(max-width:420px){.workflow-steps{grid-template-columns:1fr}.workflow-caption{flex-basis:100%;margin-left:36px}.actions>*{width:100%}}
 
 
@@ -47,8 +57,15 @@ footer{max-width:1120px;margin:0 auto;padding:0 20px 22px;color:var(--muted);fon
 </head>
 <body>
 <header>
-  <h1>ARG感想レポートメーカー</h1>
-  <div class="sub">作品情報と感想から、SNS投稿用の縦長画像を生成するためのプロンプトを作成します。</div>
+  <div class="header-inner">
+    <div class="header-copy">
+      <h1>ARG感想レポートメーカー</h1>
+      <div class="sub">作品情報と感想から、SNS投稿用の縦長画像を生成するためのプロンプトを作成します。</div>
+    </div>
+    <nav class="header-nav" aria-label="関連リンク">
+      <a href="https://fuen-dreamer.github.io/ARGtool" target="_blank" rel="noopener noreferrer">⌂ FUEN SYSTEM PORTAL</a>
+    </nav>
+  </div>
 </header>
 
 <section class="workflow-guide" aria-label="使い方">
@@ -64,6 +81,11 @@ footer{max-width:1120px;margin:0 auto;padding:0 20px 22px;color:var(--muted);fon
 <main>
   <section class="panel" aria-labelledby="inputHeading">
     <h2 id="inputHeading">作品情報・感想</h2>
+    <div class="input-tools sample-tools">
+      <button type="button" class="action sample-button" id="sampleBtn">🎲 入力例を試す</button>
+      <span class="field-hint">登録された作品からランダムに1件を入力します。</span>
+    </div>
+    <p class="sample-creator-note">ARG制作者の方へ：ここにランダム表示する作品を募集中です。<a href="https://forms.gle/72781A98g7nGeQEL6" target="_blank" rel="noopener noreferrer">掲載希望はこちら ↗</a></p>
     <div class="field-group">
     <div class="field-group-title">作品情報</div>
     <div class="field">
@@ -105,10 +127,6 @@ footer{max-width:1120px;margin:0 auto;padding:0 20px 22px;color:var(--muted);fon
       <button type="button" id="faithfulMode" aria-pressed="false">そのまま活かす</button>
     </div>
     <p class="mode-description" id="modeDescription">率直さを残しつつ、否定的な表現を少し柔らかくして、ほどほどにポジティブに整えます。</p>
-    </div>
-    <div class="input-tools">
-      <button type="button" class="action sample-button" id="sampleBtn">入力例を試す</button>
-      <span class="field-hint">サンプル内容が入力欄に入ります。実際の情報に書き換えてください。</span>
     </div>
     <p class="note privacy-note">入力内容はこのページ内でプロンプトと投稿文に反映されます。サーバーへの送信は行いません。</p>
   </section>
@@ -465,14 +483,44 @@ $('tweetBtn').addEventListener('click', () => {
   window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(tweetText), '_blank', 'noopener,noreferrer');
 });
 
-$('sampleBtn').addEventListener('click', () => {
-  $('title').value = 'ARG初心者チュートリアル！';
-  $('creator').value = 'まりc';
-  $('url').value = 'https://note.com/maric0604/n/n7680f9996e6c';
-  $('overview').value = 'Web探索型ARGって難しそう…\nそんな人のために、チュートリアルになるゲームを制作しました！\nプレイして基本を覚えましょう！';
-  $('review').value = 'ARG初心者が、段階的に調査に慣れながらARGの楽しさを体験できる作品です！\n丁寧に作り込まれており、ARGならではの試行錯誤や、謎が解けたときの爽快感を味わえます。\n後半は少し難易度が高めですが、それも含めて挑戦しがいのある内容です。\nARGに興味がある方や、これから始めてみたい方におすすめしたい作品です！';
-  $('status').textContent = '入力例を入れました。実際の作品情報・感想に書き換えてください。';
-  updatePrompt();
+$('sampleBtn').addEventListener('click', async () => {
+  const button = $('sampleBtn');
+  const previousText = button.textContent;
+  button.disabled = true;
+  button.textContent = '取得中…';
+  $('status').textContent = '';
+
+  try {
+    const response = await fetch('./ARG_Review_Report_Maker.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const works = await response.json();
+    if (!Array.isArray(works) || works.length === 0) throw new Error('No sample works found');
+
+    const validWorks = works.filter(work =>
+      work && typeof work === 'object' &&
+      typeof work.url === 'string' &&
+      typeof work.title === 'string' &&
+      typeof work.review === 'string'
+    );
+    if (validWorks.length === 0) throw new Error('No valid sample works found');
+
+    const selected = validWorks[Math.floor(Math.random() * validWorks.length)];
+    $('url').value = selected.url || '';
+    $('title').value = selected.title || '';
+    $('creator').value = selected.creator || '';
+    $('overview').value = selected.overview || '';
+    $('review').value = selected.review || '';
+    updatePrompt();
+
+    $('status').textContent = `入力例「${selected.title}」を表示しました。内容を確認して必要に応じて書き換えてください。`;
+    const fetchStatus = $('fetchStatus');
+    if (fetchStatus) fetchStatus.textContent = '';
+  } catch (error) {
+    $('status').textContent = '入力例を読み込めませんでした。HTMLファイルと「ARG_Review_Report_Maker.json」を同じフォルダーに置き、Webサーバー上で開いているか確認してください。';
+  } finally {
+    button.disabled = false;
+    button.textContent = previousText;
+  }
 });
 updatePrompt();
 </script>
